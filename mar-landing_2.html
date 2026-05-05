@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MA R — Trouve ta résidence à Abidjan</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --orange:    #FF5C00;
+    --yellow:    #FFD600;
+    --cyan:      #00F0FF;
+    --black:     #0d0d0d;
+    --white:     #fafaf7;
+    --gray:      #f0ede6;
+    --gray2:     #e2ddd4;
+    --ink-soft:  #444;
+    --ink-mute:  #888;
+    --border:    4px solid var(--black);
+    --shadow:    5px 5px 0px var(--black);
+    --shadow-lg: 8px 8px 0px var(--black);
+    --font:      'Space Grotesk', system-ui, sans-serif;
+    --font-disp: 'Bebas Neue', Impact, sans-serif;
+    --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font-body); background: var(--white); color: var(--black); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; height: 64px; background: var(--white); border-bottom: var(--border); }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo svg { width: 38px; height: 38px; }
+  .nav-logo-text { font-family: var(--font-disp); font-size: 26px; letter-spacing: 1px; color: var(--black); }
+  .nav-logo-text span { color: var(--orange); }
+  .nav-links { display: flex; align-items: center; gap: 6px; }
+  .nav-links a { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--black); text-decoration: none; padding: 7px 14px; border: 2px solid transparent; transition: border-color 0.15s; }
+  .nav-links a:hover { border-color: var(--black); }
+  .btn-nav { background: var(--orange) !important; color: var(--white) !important; border: var(--border) !important; box-shadow: var(--shadow); }
+  .btn-nav:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--black) !important; }
+
+  /* HERO */
+  .hero { min-height: 100vh; padding: 100px 5vw 60px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center; max-width: 1280px; margin: 0 auto; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 8px; background: var(--yellow); border: var(--border); box-shadow: var(--shadow); padding: 6px 16px; font-family: var(--font); font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 24px; }
+  .hero-title { font-family: var(--font-disp); font-size: clamp(72px, 9vw, 128px); line-height: 0.9; letter-spacing: 2px; margin-bottom: 10px; }
+  .hero-title .line-orange { color: var(--orange); }
+  .hero-title .line-outline { color: transparent; -webkit-text-stroke: 3px var(--black); }
+  .hero-sub { font-family: var(--font-body); font-size: 16px; line-height: 1.65; color: var(--ink-soft); margin: 20px 0 36px; max-width: 460px; border-left: 5px solid var(--orange); padding-left: 16px; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+
+  .btn-primary { display: inline-flex; align-items: center; gap: 10px; background: var(--orange); color: var(--white); font-family: var(--font); font-size: 14px; font-weight: 700; padding: 14px 28px; border: var(--border); box-shadow: var(--shadow); cursor: pointer; text-decoration: none; transition: transform 0.1s, box-shadow 0.1s; text-transform: uppercase; letter-spacing: 0.5px; }
+  .btn-primary:hover { transform: translate(-3px,-3px); box-shadow: 8px 8px 0 var(--black); }
+  .btn-secondary { display: inline-flex; align-items: center; gap: 10px; background: var(--white); color: var(--black); font-family: var(--font); font-size: 14px; font-weight: 700; padding: 14px 28px; border: var(--border); box-shadow: var(--shadow); cursor: pointer; text-decoration: none; transition: transform 0.1s, box-shadow 0.1s; text-transform: uppercase; letter-spacing: 0.5px; }
+  .btn-secondary:hover { transform: translate(-3px,-3px); box-shadow: 8px 8px 0 var(--black); }
+
+  .hero-trust { display: flex; align-items: center; gap: 12px; font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+  .trust-avatars { display: flex; }
+  .trust-avatars span { width: 32px; height: 32px; border: 3px solid var(--white); border-radius: 99px; display: flex; align-items: center; justify-content: center; font-size: 15px; margin-left: -8px; background: var(--gray2); }
+  .trust-avatars span:first-child { margin-left: 0; }
+
+  /* HERO VISUAL */
+  .hero-visual { position: relative; display: flex; justify-content: center; }
+  .phone-mock { width: 260px; background: var(--black); border: var(--border); box-shadow: var(--shadow-lg); padding: 12px; position: relative; z-index: 1; animation: float 5s ease-in-out infinite; }
+  .phone-inner { background: var(--white); overflow: hidden; height: 500px; border: 2px solid var(--black); }
+  .phone-status { display: flex; justify-content: space-between; padding: 8px 14px; background: var(--black); color: var(--white); font-family: var(--font); font-size: 10px; font-weight: 700; }
+  .phone-logo-bar { padding: 10px 12px 6px; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid var(--black); }
+  .phone-logo-bar svg { width: 26px; height: 26px; }
+  .phone-logo-bar span { font-family: var(--font-disp); font-size: 17px; letter-spacing: 1px; }
+  .phone-search { margin: 8px 10px; background: var(--gray); border: 2px solid var(--black); padding: 8px 12px; font-family: var(--font); font-size: 11px; color: var(--ink-mute); font-weight: 500; }
+  .phone-tag-row { display: flex; gap: 5px; padding: 6px 10px; overflow: hidden; }
+  .phone-tag { flex-shrink: 0; border: 2px solid var(--black); font-family: var(--font); font-size: 10px; font-weight: 700; padding: 3px 9px; background: var(--white); }
+  .phone-tag.active { background: var(--orange); color: var(--white); }
+  .phone-card { margin: 6px 10px; border: 2px solid var(--black); box-shadow: 3px 3px 0 var(--black); overflow: hidden; }
+  .phone-card-img { height: 110px; background: var(--orange); display: flex; align-items: center; justify-content: center; font-size: 36px; position: relative; }
+  .phone-card-badge { position: absolute; top: 7px; left: 7px; background: var(--yellow); color: var(--black); font-family: var(--font); font-size: 9px; font-weight: 800; padding: 2px 7px; border: 1.5px solid var(--black); text-transform: uppercase; }
+  .phone-card-body { padding: 9px 10px; }
+  .phone-card-title { font-family: var(--font); font-size: 12px; font-weight: 700; }
+  .phone-card-loc { font-size: 10px; color: var(--ink-mute); margin-top: 1px; }
+  .phone-card-price { font-family: var(--font-disp); font-size: 16px; color: var(--orange); margin-top: 4px; }
+  .phone-card-price span { font-family: var(--font-body); font-size: 10px; color: var(--ink-mute); }
+  .float-badge { position: absolute; background: var(--white); border: var(--border); box-shadow: var(--shadow); padding: 10px 16px; font-family: var(--font); z-index: 2; }
+  .float-badge.tl { top: 30px; left: -30px; animation: float 4s ease-in-out infinite 0.5s; }
+  .float-badge.br { bottom: 60px; right: -24px; animation: float 4.5s ease-in-out infinite 1s; }
+  .float-badge .val { font-family: var(--font-disp); font-size: 22px; color: var(--orange); }
+  .float-badge .sub { font-size: 10px; font-weight: 600; color: var(--ink-mute); margin-top: 2px; }
+
+  /* MARQUEE */
+  .marquee-section { background: var(--black); padding: 14px 0; overflow: hidden; border-top: var(--border); border-bottom: var(--border); }
+  .marquee-track { display: flex; gap: 48px; animation: marquee 20s linear infinite; white-space: nowrap; width: max-content; }
+  .marquee-track span { font-family: var(--font-disp); font-size: 20px; letter-spacing: 1px; color: var(--white); }
+  .marquee-track .dot { color: var(--orange); }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* SEARCH */
+  .search-section { padding: 40px 5vw; background: var(--gray); border-bottom: var(--border); }
+  .search-wrap { max-width: 900px; margin: 0 auto; display: flex; align-items: stretch; border: var(--border); box-shadow: var(--shadow-lg); background: var(--white); }
+  .search-field { flex: 1; display: flex; flex-direction: column; padding: 14px 18px; border-right: var(--border); cursor: pointer; transition: background 0.15s; }
+  .search-field:hover { background: var(--gray); }
+  .search-field label { font-family: var(--font); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-mute); margin-bottom: 4px; }
+  .search-field span { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--black); }
+  .search-btn { background: var(--orange); color: var(--white); border: none; padding: 0 28px; font-family: var(--font); font-size: 13px; font-weight: 800; cursor: pointer; text-transform: uppercase; letter-spacing: 0.8px; display: flex; align-items: center; gap: 8px; white-space: nowrap; transition: background 0.15s; }
+  .search-btn:hover { background: #d94d00; }
+
+  /* STATS */
+  .stats-section { display: grid; grid-template-columns: repeat(3,1fr); border-bottom: var(--border); }
+  .stat-card { padding: 40px 5vw; border-right: var(--border); }
+  .stat-card:last-child { border-right: none; }
+  .stat-num { font-family: var(--font-disp); font-size: 64px; line-height: 1; margin-bottom: 10px; }
+  .stat-num .accent { color: var(--orange); }
+  .stat-label { font-family: var(--font-body); font-size: 14px; color: var(--ink-soft); line-height: 1.5; }
+
+  /* LISTINGS */
+  .listings-section { padding: 60px 5vw 80px; }
+  .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px; }
+  .section-title { font-family: var(--font-disp); font-size: 52px; letter-spacing: 1px; line-height: 1; }
+  .section-link { font-family: var(--font); font-size: 13px; font-weight: 800; color: var(--orange); text-decoration: none; border-bottom: 2px solid var(--orange); padding-bottom: 2px; text-transform: uppercase; }
+  .listings-grid { display: grid; grid-template-columns: repeat(3,1fr); border: var(--border); }
+  .listing-card { border-right: var(--border); text-decoration: none; color: inherit; display: block; overflow: hidden; transition: transform 0.15s, box-shadow 0.15s; cursor: pointer; }
+  .listing-card:last-child { border-right: none; }
+  .listing-card:hover { transform: translate(-3px,-3px); box-shadow: var(--shadow-lg); position: relative; z-index: 1; }
+  .listing-img { height: 200px; display: flex; align-items: center; justify-content: center; font-size: 52px; position: relative; border-bottom: var(--border); }
+  .listing-img.c1 { background: var(--orange); }
+  .listing-img.c2 { background: var(--black); }
+  .listing-img.c3 { background: var(--yellow); }
+  .listing-heart { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; background: var(--white); border: 2px solid var(--black); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .listing-type { position: absolute; bottom: 10px; left: 10px; background: var(--black); color: var(--white); font-family: var(--font); font-size: 9px; font-weight: 800; padding: 3px 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .listing-body { padding: 16px; }
+  .listing-loc { font-family: var(--font); font-size: 10px; font-weight: 800; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.8px; }
+  .listing-title { font-family: var(--font); font-size: 15px; font-weight: 700; margin: 6px 0 10px; }
+  .listing-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .listing-tag { font-family: var(--font); font-size: 10px; font-weight: 700; border: 2px solid var(--black); padding: 3px 9px; text-transform: uppercase; }
+  .listing-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 2px solid var(--black); }
+  .listing-price { font-family: var(--font-disp); font-size: 22px; color: var(--orange); }
+  .listing-price span { font-family: var(--font-body); font-size: 11px; color: var(--ink-mute); }
+  .listing-rating { font-family: var(--font); font-size: 13px; font-weight: 800; }
+
+  /* HOW */
+  .how-section { background: var(--black); color: var(--white); padding: 80px 5vw; border-top: var(--border); border-bottom: var(--border); }
+  .how-section .section-title { color: var(--white); margin-bottom: 40px; }
+  .how-grid { display: grid; grid-template-columns: 1fr 1fr; border: var(--border); }
+  .how-col { padding: 40px; border-right: 4px solid rgba(255,255,255,0.12); }
+  .how-col:last-child { border-right: none; }
+  .how-col-title { font-family: var(--font); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 28px; }
+  .how-col-title.orange { color: var(--orange); }
+  .how-col-title.yellow { color: var(--yellow); }
+  .how-step { display: flex; gap: 16px; margin-bottom: 24px; }
+  .how-num { width: 36px; height: 36px; flex-shrink: 0; border: 2px solid; display: flex; align-items: center; justify-content: center; font-family: var(--font-disp); font-size: 18px; }
+  .how-num.orange { border-color: var(--orange); color: var(--orange); }
+  .how-num.yellow { border-color: var(--yellow); color: var(--yellow); }
+  .how-step-title { font-family: var(--font); font-size: 14px; font-weight: 700; margin-bottom: 5px; color: var(--white); }
+  .how-step-sub { font-family: var(--font-body); font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.55; }
+
+  /* PRICING */
+  .pricing-section { padding: 80px 5vw; border-bottom: var(--border); }
+  .pricing-sub { font-family: var(--font-body); font-size: 15px; color: var(--ink-soft); margin-bottom: 36px; }
+  .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; border: var(--border); box-shadow: var(--shadow-lg); }
+  .pricing-card { padding: 40px; border-right: var(--border); }
+  .pricing-card:last-child { border-right: none; }
+  .pricing-card.premium { background: var(--orange); }
+  .pricing-role { font-family: var(--font); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-mute); margin-bottom: 6px; }
+  .pricing-card.premium .pricing-role { color: rgba(255,255,255,0.65); }
+  .pricing-title { font-family: var(--font-disp); font-size: 38px; letter-spacing: 1px; margin-bottom: 4px; }
+  .pricing-card.premium .pricing-title { color: var(--white); }
+  .pricing-price { font-family: var(--font-disp); font-size: 56px; line-height: 1; margin-bottom: 6px; }
+  .pricing-card.premium .pricing-price { color: var(--yellow); }
+  .pricing-price small { font-family: var(--font-body); font-size: 14px; color: var(--ink-mute); }
+  .pricing-card.premium .pricing-price small { color: rgba(255,255,255,0.65); }
+  .pricing-desc { font-family: var(--font-body); font-size: 13px; color: var(--ink-soft); margin-bottom: 28px; line-height: 1.5; }
+  .pricing-card.premium .pricing-desc { color: rgba(255,255,255,0.7); }
+  .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+  .pricing-features li { font-family: var(--font-body); font-size: 13px; display: flex; gap: 10px; line-height: 1.4; }
+  .pricing-features li::before { content: '→'; font-weight: 800; flex-shrink: 0; color: var(--orange); }
+  .pricing-card.premium .pricing-features li { color: var(--white); }
+  .pricing-card.premium .pricing-features li::before { color: var(--yellow); }
+  .pricing-btn { display: block; width: 100%; padding: 16px; font-family: var(--font); font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; border: var(--border); cursor: pointer; box-shadow: var(--shadow); transition: transform 0.1s, box-shadow 0.1s; }
+  .pricing-btn:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--black); }
+  .pricing-card.free .pricing-btn { background: var(--black); color: var(--white); }
+  .pricing-card.premium .pricing-btn { background: var(--yellow); color: var(--black); }
+  .popular-badge { display: inline-block; background: var(--yellow); color: var(--black); font-family: var(--font); font-size: 10px; font-weight: 800; padding: 4px 12px; border: 2px solid var(--black); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+
+  /* TESTIMONIALS */
+  .testim-section { padding: 80px 5vw; background: var(--gray); border-bottom: var(--border); }
+  .testim-grid { display: grid; grid-template-columns: repeat(3,1fr); margin-top: 36px; border: var(--border); }
+  .testim-card { padding: 28px; border-right: var(--border); }
+  .testim-card:last-child { border-right: none; }
+  .testim-stars { color: var(--orange); font-size: 16px; margin-bottom: 14px; letter-spacing: 2px; }
+  .testim-text { font-family: var(--font-body); font-size: 14px; line-height: 1.65; color: var(--ink-soft); margin-bottom: 18px; }
+  .testim-author { display: flex; align-items: center; gap: 10px; padding-top: 14px; border-top: 2px solid var(--black); }
+  .testim-avatar { width: 36px; height: 36px; border: 2px solid var(--black); display: flex; align-items: center; justify-content: center; font-family: var(--font-disp); font-size: 18px; background: var(--orange); color: var(--white); }
+  .testim-name { font-family: var(--font); font-size: 13px; font-weight: 700; }
+  .testim-role { font-family: var(--font-body); font-size: 11px; color: var(--ink-mute); margin-top: 2px; }
+
+  /* CTA */
+  .cta-section { padding: 80px 5vw; background: var(--orange); border-bottom: var(--border); text-align: center; }
+  .cta-inner { max-width: 700px; margin: 0 auto; }
+  .cta-title { font-family: var(--font-disp); font-size: clamp(56px, 8vw, 100px); letter-spacing: 2px; line-height: 0.9; color: var(--white); margin-bottom: 20px; }
+  .cta-title .outline { color: transparent; -webkit-text-stroke: 3px var(--white); }
+  .cta-sub { font-family: var(--font-body); font-size: 16px; color: rgba(255,255,255,0.8); margin-bottom: 36px; line-height: 1.6; }
+  .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .cta-section .btn-primary { background: var(--yellow); color: var(--black); }
+  .cta-section .btn-secondary { background: transparent; color: var(--white); border-color: var(--white); box-shadow: 5px 5px 0 rgba(0,0,0,0.2); }
+
+  /* FOOTER */
+  footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 56px 5vw 32px; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .footer-brand svg { width: 44px; height: 44px; margin-bottom: 10px; display: block; }
+  .footer-brand .brand-name { font-family: var(--font-disp); font-size: 26px; color: var(--white); letter-spacing: 1px; margin-bottom: 10px; }
+  .footer-brand .brand-name span { color: var(--orange); }
+  .footer-brand p { font-family: var(--font-body); font-size: 13px; line-height: 1.6; }
+  .footer-col h4 { font-family: var(--font); font-size: 11px; font-weight: 800; color: var(--white); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+  .footer-col a { display: block; font-family: var(--font-body); font-size: 13px; margin-bottom: 10px; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.15s; }
+  .footer-col a:hover { color: var(--orange); }
+  .footer-bottom { display: flex; justify-content: space-between; font-family: var(--font); font-size: 12px; font-weight: 500; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes float { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-8px); } }
+  .hero-left > * { animation: fadeUp 0.5s ease both; }
+  .hero-left > *:nth-child(1){animation-delay:0.05s}
+  .hero-left > *:nth-child(2){animation-delay:0.12s}
+  .hero-left > *:nth-child(3){animation-delay:0.2s}
+  .hero-left > *:nth-child(4){animation-delay:0.28s}
+  .hero-left > *:nth-child(5){animation-delay:0.35s}
+
+  /* RESPONSIVE */
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-visual { display: none; }
+    .hero-actions { justify-content: center; }
+    .hero-trust { justify-content: center; }
+    .stats-section, .listings-grid, .testim-grid { grid-template-columns: 1fr; }
+    .stat-card, .listing-card, .testim-card { border-right: none; border-bottom: var(--border); }
+    .how-grid, .pricing-grid { grid-template-columns: 1fr; }
+    .how-col, .pricing-card { border-right: none; border-bottom: var(--border); }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .hide-mob { display: none; }
+  }
+  @media (max-width: 600px) {
+    .footer-grid { grid-template-columns: 1fr; }
+    .search-wrap { flex-direction: column; }
+    .search-field { border-right: none; border-bottom: var(--border); }
+    .search-btn { padding: 18px; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGO SVG inline (réutilisé partout) -->
+<template id="logo-svg">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+    <rect x="30" y="30" width="140" height="140" fill="black"/>
+    <rect x="20" y="20" width="140" height="140" fill="#FF5C00" stroke="black" stroke-width="6"/>
+    <path d="M55 50V130H80V100H95L115 130H145L120 95C135 90 140 75 140 65C140 50 130 50 120 50H55ZM80 70H115V85H80V70Z" fill="white" stroke="black" stroke-width="4"/>
+    <path d="M20 20L50 0H190L160 20H20Z" fill="#FFD600" stroke="black" stroke-width="6"/>
+    <path d="M160 20L190 0V140L160 160V20Z" fill="#00F0FF" stroke="black" stroke-width="6"/>
+  </svg>
+</template>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none" style="width:38px;height:38px;">
+      <rect x="30" y="30" width="140" height="140" fill="black"/>
+      <rect x="20" y="20" width="140" height="140" fill="#FF5C00" stroke="black" stroke-width="6"/>
+      <path d="M55 50V130H80V100H95L115 130H145L120 95C135 90 140 75 140 65C140 50 130 50 120 50H55ZM80 70H115V85H80V70Z" fill="white" stroke="black" stroke-width="4"/>
+      <path d="M20 20L50 0H190L160 20H20Z" fill="#FFD600" stroke="black" stroke-width="6"/>
+      <path d="M160 20L190 0V140L160 160V20Z" fill="#00F0FF" stroke="black" stroke-width="6"/>
+    </svg>
+    <span class="nav-logo-text">MA<span>R</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="#listings" class="hide-mob">Résidences</a>
+    <a href="#how" class="hide-mob">Comment ça marche</a>
+    <a href="#pricing" class="hide-mob">Tarifs</a>
+    <a href="#signup" class="btn-nav">Commencer</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">🇨🇮 Abidjan · Côte d'Ivoire</div>
+    <h1 class="hero-title">
+      TROUVE<br/>
+      <span class="line-orange">TA R</span><br/>
+      <span class="line-outline">ABIDJAN</span>
+    </h1>
+    <p class="hero-sub">
+      Prix exacts, photos HD, GPS précis.<br/>
+      Zéro arnaque — juste posé chez toi.<br/>
+      Cocody, Plateau, Marcory et partout.
+    </p>
+    <div class="hero-actions">
+      <a href="#listings" class="btn-primary">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="6.5" cy="6.5" r="5"/><path d="M11 11l3 3"/></svg>
+        Chercher une R
+      </a>
+      <a href="#pricing" class="btn-secondary">Je publie mon annonce</a>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-avatars">
+        <span>👩🏾</span><span>👨🏿</span><span>👩🏽</span><span>👨🏾</span>
+      </div>
+      <span>+500 résidences vérifiées</span>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="float-badge tl">
+      <div class="val">4.9★</div>
+      <div class="sub">Note moyenne</div>
+    </div>
+    <div class="phone-mock">
+      <div class="phone-inner">
+        <div class="phone-status"><span>9:41</span><span>●●●</span></div>
+        <div class="phone-logo-bar">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none" style="width:24px;height:24px;">
+            <rect x="30" y="30" width="140" height="140" fill="black"/>
+            <rect x="20" y="20" width="140" height="140" fill="#FF5C00" stroke="black" stroke-width="8"/>
+            <path d="M55 50V130H80V100H95L115 130H145L120 95C135 90 140 75 140 65C140 50 130 50 120 50H55ZM80 70H115V85H80V70Z" fill="white" stroke="black" stroke-width="5"/>
+            <path d="M20 20L50 0H190L160 20H20Z" fill="#FFD600" stroke="black" stroke-width="8"/>
+            <path d="M160 20L190 0V140L160 160V20Z" fill="#00F0FF" stroke="black" stroke-width="8"/>
+          </svg>
+          <span>MAR</span>
+        </div>
+        <div class="phone-search">🔍 Cocody, Riviera, Plateau…</div>
+        <div class="phone-tag-row">
+          <span class="phone-tag active">Tout</span>
+          <span class="phone-tag">Studios</span>
+          <span class="phone-tag">Villas</span>
+          <span class="phone-tag">Apparts</span>
+        </div>
+        <div class="phone-card">
+          <div class="phone-card-img">🏠<span class="phone-card-badge">Nouveau</span></div>
+          <div class="phone-card-body">
+            <div class="phone-card-title">Villa avec piscine privée</div>
+            <div class="phone-card-loc">📍 Cocody · Bonoumin</div>
+            <div class="phone-card-price">120 000 <span>FCFA/nuit</span></div>
+          </div>
+        </div>
+        <div class="phone-card" style="margin-top:6px;">
+          <div class="phone-card-img" style="background:#0d0d0d;height:80px;">🏢</div>
+          <div class="phone-card-body" style="padding:8px 10px;">
+            <div class="phone-card-title">Appart vue lagune</div>
+            <div class="phone-card-loc">📍 Plateau · Centre</div>
+            <div class="phone-card-price" style="font-size:14px;">65 000 <span>FCFA/nuit</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="float-badge br">
+      <div class="val">247+</div>
+      <div class="sub">Quartiers couverts</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span>COCODY</span><span class="dot"> ✦ </span><span>PLATEAU</span><span class="dot"> ✦ </span><span>MARCORY</span><span class="dot"> ✦ </span><span>YOPOUGON</span><span class="dot"> ✦ </span><span>RIVIERA</span><span class="dot"> ✦ </span><span>TREICHVILLE</span><span class="dot"> ✦ </span><span>BINGERVILLE</span><span class="dot"> ✦ </span><span>DEUX PLATEAUX</span><span class="dot"> ✦ </span><span>ADJAMÉ</span><span class="dot"> ✦ </span>
+    <span>COCODY</span><span class="dot"> ✦ </span><span>PLATEAU</span><span class="dot"> ✦ </span><span>MARCORY</span><span class="dot"> ✦ </span><span>YOPOUGON</span><span class="dot"> ✦ </span><span>RIVIERA</span><span class="dot"> ✦ </span><span>TREICHVILLE</span><span class="dot"> ✦ </span><span>BINGERVILLE</span><span class="dot"> ✦ </span><span>DEUX PLATEAUX</span><span class="dot"> ✦ </span><span>ADJAMÉ</span><span class="dot"> ✦ </span>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-section">
+  <div class="search-wrap">
+    <div class="search-field"><label>Quartier</label><span>Cocody, Plateau…</span></div>
+    <div class="search-field"><label>Type de R</label><span>Studio, Villa, Appart</span></div>
+    <div class="search-field"><label>Budget / nuit</label><span>25k – 200k FCFA</span></div>
+    <div class="search-field"><label>Durée</label><span>Court · Moyen · Long</span></div>
+    <button class="search-btn">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="6" cy="6" r="4.5"/><path d="M10 10l3 3"/></svg>
+      Chercher
+    </button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-section">
+  <div class="stat-card"><div class="stat-num">5<span class="accent">00+</span></div><div class="stat-label">Résidences vérifiées dans toutes les communes d'Abidjan</div></div>
+  <div class="stat-card"><div class="stat-num">0<span class="accent"> arnaque</span></div><div class="stat-label">Photos HD réelles, prix garantis, propriétaires vérifiés KYC</div></div>
+  <div class="stat-card"><div class="stat-num">24<span class="accent">h</span></div><div class="stat-label">Délai moyen de réponse d'un propriétaire sur MA R</div></div>
+</div>
+
+<!-- LISTINGS -->
+<section class="listings-section" id="listings">
+  <div class="section-header">
+    <h2 class="section-title">LES R DU MOMENT 🔥</h2>
+    <a href="#" class="section-link">Voir tout →</a>
+  </div>
+  <div class="listings-grid">
+    <a href="#" class="listing-card">
+      <div class="listing-img c1">🏠<div class="listing-heart">🤍</div><div class="listing-type">Villa meublée</div></div>
+      <div class="listing-body">
+        <div class="listing-loc">📍 Cocody · Bonoumin</div>
+        <div class="listing-title">Grande villa avec piscine privée</div>
+        <div class="listing-tags"><span class="listing-tag">🛏 4 ch.</span><span class="listing-tag">❄️ Clim</span><span class="listing-tag">🔒 Gardien</span></div>
+        <div class="listing-footer"><div class="listing-price">120 000 <span>FCFA/nuit</span></div><div class="listing-rating">★ 4.9</div></div>
+      </div>
+    </a>
+    <a href="#" class="listing-card">
+      <div class="listing-img c2">🏢<div class="listing-heart">🤍</div><div class="listing-type">Appartement</div></div>
+      <div class="listing-body">
+        <div class="listing-loc">📍 Plateau · Centre</div>
+        <div class="listing-title">Appart moderne vue lagune</div>
+        <div class="listing-tags"><span class="listing-tag">🛏 2 ch.</span><span class="listing-tag">📶 Fibre</span><span class="listing-tag">🏊 Piscine</span></div>
+        <div class="listing-footer"><div class="listing-price">65 000 <span>FCFA/nuit</span></div><div class="listing-rating">★ 4.8</div></div>
+      </div>
+    </a>
+    <a href="#" class="listing-card">
+      <div class="listing-img c3">🏡<div class="listing-heart">🤍</div><div class="listing-type">Studio premium</div></div>
+      <div class="listing-body">
+        <div class="listing-loc">📍 Marcory · Anoumabo</div>
+        <div class="listing-title">Studio équipé tout inclus</div>
+        <div class="listing-tags"><span class="listing-tag">🛏 1 ch.</span><span class="listing-tag">🍳 Cuisine</span><span class="listing-tag">📺 TV 4K</span></div>
+        <div class="listing-footer"><div class="listing-price">25 000 <span>FCFA/nuit</span></div><div class="listing-rating">★ 4.7</div></div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="how-section" id="how">
+  <h2 class="section-title">COMMENT ÇA MARCHE ?</h2>
+  <div class="how-grid">
+    <div class="how-col">
+      <div class="how-col-title orange">● Pour les locataires — 100% Gratuit</div>
+      <div class="how-step"><div class="how-num orange">1</div><div><div class="how-step-title">Crée ton compte en 30 sec</div><div class="how-step-sub">Prénom + numéro CI. Un SMS de confirmation et c'est parti. Zéro carte bancaire.</div></div></div>
+      <div class="how-step"><div class="how-num orange">2</div><div><div class="how-step-title">Cherche ta R</div><div class="how-step-sub">Filtre par quartier, budget, type. Carte interactive pour voir les résidences autour de toi.</div></div></div>
+      <div class="how-step"><div class="how-num orange">3</div><div><div class="how-step-title">Réserve et emménage</div><div class="how-step-sub">Chatte avec le proprio, confirme tes dates et emménage. Simple comme bonjour.</div></div></div>
+    </div>
+    <div class="how-col">
+      <div class="how-col-title yellow">● Pour les propriétaires — Premium</div>
+      <div class="how-step"><div class="how-num yellow">1</div><div><div class="how-step-title">Prends l'abonnement Premium</div><div class="how-step-sub">À partir de 9 900 FCFA/mois. Payable par Orange Money, Wave ou CinetPay.</div></div></div>
+      <div class="how-step"><div class="how-num yellow">2</div><div><div class="how-step-title">Publie ton annonce en 5 min</div><div class="how-step-sub">Photos, équipements, règles, prix. Vérification KYC pour inspirer confiance.</div></div></div>
+      <div class="how-step"><div class="how-num yellow">3</div><div><div class="how-step-title">Reçois les réservations</div><div class="how-step-sub">Gère ton calendrier, réponds aux demandes, suis tes revenus depuis ton dashboard.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <h2 class="section-title">TARIFS</h2>
+  <p class="pricing-sub">Locataires : accès total gratuit. Propriétaires : abonnement mensuel simple.</p>
+  <div class="pricing-grid">
+    <div class="pricing-card free">
+      <div class="pricing-role">Locataire</div>
+      <div class="pricing-title">GRATUIT</div>
+      <div class="pricing-price">0 <small>FCFA</small></div>
+      <div class="pricing-desc">Cherche, réserve et contacte sans jamais payer.</div>
+      <ul class="pricing-features">
+        <li>Recherche illimitée</li><li>Messagerie avec propriétaires</li><li>Réservations en ligne</li><li>Favoris & historique</li><li>Avis et notations</li>
+      </ul>
+      <button class="pricing-btn">Créer un compte</button>
+    </div>
+    <div class="pricing-card premium">
+      <div class="popular-badge">⭐ Le plus populaire</div>
+      <div class="pricing-role">Propriétaire</div>
+      <div class="pricing-title">PREMIUM</div>
+      <div class="pricing-price">9 900 <small>FCFA/mois</small></div>
+      <div class="pricing-desc">Publie tes annonces et remplis ton calendrier facilement.</div>
+      <ul class="pricing-features">
+        <li>Annonces illimitées</li><li>Tableau de bord revenus</li><li>Calendrier de réservation</li><li>Messagerie prioritaire</li><li>Badge propriétaire vérifié</li><li>Statistiques de vues</li>
+      </ul>
+      <button class="pricing-btn">Démarrer maintenant</button>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testim-section">
+  <h2 class="section-title">ILS ONT TROUVÉ LEUR R 💬</h2>
+  <div class="testim-grid">
+    <div class="testim-card">
+      <div class="testim-stars">★★★★★</div>
+      <p class="testim-text">J'ai trouvé mon studio à Cocody en moins de 2 jours. Les photos correspondaient exactement à la réalité. Zéro mauvaise surprise.</p>
+      <div class="testim-author"><div class="testim-avatar">A</div><div><div class="testim-name">Aïcha D.</div><div class="testim-role">Étudiante · Cocody</div></div></div>
+    </div>
+    <div class="testim-card">
+      <div class="testim-stars">★★★★★</div>
+      <p class="testim-text">En tant que proprio, j'ai rempli mon calendrier en une semaine. Le dashboard est simple et les locataires arrivent déjà vérifiés.</p>
+      <div class="testim-author"><div class="testim-avatar" style="background:#FFD600;color:#0d0d0d;">K</div><div><div class="testim-name">Kofi M.</div><div class="testim-role">Propriétaire · Marcory</div></div></div>
+    </div>
+    <div class="testim-card">
+      <div class="testim-stars">★★★★★</div>
+      <p class="testim-text">Enfin une app qui comprend Abidjan. Les prix en FCFA, Orange Money pour payer. Tout est pensé pour nous.</p>
+      <div class="testim-author"><div class="testim-avatar" style="background:#00F0FF;color:#0d0d0d;">J</div><div><div class="testim-name">Jean-Paul N.</div><div class="testim-role">Cadre · Plateau</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="signup">
+  <div class="cta-inner">
+    <h2 class="cta-title">PRÊT À<br/><span class="outline">TROUVER</span><br/>TA R ?</h2>
+    <p class="cta-sub">Rejoins des centaines d'Abidjanais qui ont trouvé leur résidence idéale. Inscription gratuite, pas de carte bancaire.</p>
+    <div class="cta-actions">
+      <a href="#" class="btn-primary">Je cherche une R — Gratuit</a>
+      <a href="#pricing" class="btn-secondary">Je suis propriétaire</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+        <rect x="30" y="30" width="140" height="140" fill="black"/>
+        <rect x="20" y="20" width="140" height="140" fill="#FF5C00" stroke="black" stroke-width="6"/>
+        <path d="M55 50V130H80V100H95L115 130H145L120 95C135 90 140 75 140 65C140 50 130 50 120 50H55ZM80 70H115V85H80V70Z" fill="white" stroke="black" stroke-width="4"/>
+        <path d="M20 20L50 0H190L160 20H20Z" fill="#FFD600" stroke="black" stroke-width="6"/>
+        <path d="M160 20L190 0V140L160 160V20Z" fill="#00F0FF" stroke="black" stroke-width="6"/>
+      </svg>
+      <div class="brand-name">MA<span>R</span></div>
+      <p>La première plateforme de résidences meublées à Abidjan. Prix exacts, zéro arnaque.</p>
+    </div>
+    <div class="footer-col"><h4>Produit</h4><a href="#">Rechercher</a><a href="#">Publier</a><a href="#">Tarifs</a><a href="#">Carte</a></div>
+    <div class="footer-col"><h4>Communes</h4><a href="#">Cocody</a><a href="#">Plateau</a><a href="#">Marcory</a><a href="#">Yopougon</a></div>
+    <div class="footer-col"><h4>Légal</h4><a href="#">CGU</a><a href="#">Confidentialité</a><a href="#">Contact</a><a href="#">À propos</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 MA R · Abidjan, Côte d'Ivoire</span>
+    <span>Fait avec ❤️ à Abidjan</span>
+  </div>
+</footer>
+
+</body>
+</html>
