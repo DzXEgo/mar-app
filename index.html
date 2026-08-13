@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>MA R — Trouve ta résidence à Abidjan</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Bebas+Neue&function=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -606,7 +606,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 // ══════════════════════════════════════
 // VERSION
 // ══════════════════════════════════════
-console.log('%cMA R v4 — Cloudinary + édition + disponibilité', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
+console.log('%cMA R v4.1 — version corrigée', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
 
 // ══════════════════════════════════════
 // CONFIG
@@ -641,7 +641,7 @@ let existingPhotos = [];
 let selectedFiles = [];
 
 // ══════════════════════════════════════
-// NAVIGATION
+// NAVIGATION & UI
 // ══════════════════════════════════════
 function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -873,7 +873,7 @@ function filterListings() {
 
   const grid = document.getElementById('listings-grid');
   if (filtered.length === 0) {
-    grid.innerHTML = '<div class="empty-state"><h3>Aucune R trouvée 😕</h3><p>Essaie d'élargir ta recherche.</p></div>';
+    grid.innerHTML = "<div class='empty-state'><h3>Aucune R trouvée 😕</h3><p>Essaie d'élargir ta recherche.</p></div>";
   } else {
     grid.innerHTML = filtered.map((r, i) => renderCard(r, i)).join('');
   }
@@ -905,7 +905,7 @@ async function loadDashboard() {
         return renderCard(r, i, actions);
       }).join('');
     } else {
-      grid.innerHTML = '<div style="grid-column:1/-1;padding:32px;border:var(--border);text-align:center;font-family:var(--font);"><p>Tu n'as pas encore d'annonce.</p></div>';
+      grid.innerHTML = "<div style='grid-column:1/-1;padding:32px;border:var(--border);text-align:center;font-family:var(--font);'><p>Tu n'as pas encore d'annonce.</p></div>";
     }
   } else {
     document.getElementById('dash-role-label').textContent = 'Tableau de bord locataire';
@@ -939,7 +939,7 @@ async function toggleDispo(id, etaitOccupe) {
 async function editResidence(id) {
   try {
     const { data, error } = await sb.from('residences').select('*').eq('id', id).single();
-    if (error || !data) return showToast('Impossible de charger l'annonce', 'error');
+    if (error || !data) return showToast("Impossible de charger l'annonce", 'error');
 
     editingId = id;
     existingPhotos = [...(data.photos || [])];
@@ -1023,7 +1023,6 @@ async function publierResidence() {
   btn.disabled = true; btn.textContent = 'ENVOI EN COURS...';
 
   try {
-    // Upload des NOUVELLES photos via Cloudinary
     let newUrls = [];
     if (selectedFiles.length > 0) {
       showAlert('publish-alert', '📸 Upload de ' + selectedFiles.length + ' photo(s) via Cloudinary ⚡ ...', 'success');
