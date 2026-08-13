@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>MA R — Trouve ta résidence à Abidjan</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Bebas+Neue&function=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,7 +20,7 @@
 html { scroll-behavior: smooth; }
 body { font-family: var(--font-body); background: var(--white); color: var(--black); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 
-/* ── NAV ─ */
+/* ── NAV  */
 nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; height: 64px; background: var(--white); border-bottom: var(--border); }
 .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer; }
 .nav-logo svg { width: 38px; height: 38px; }
@@ -33,6 +33,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .btn-nav:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--black) !important; }
 .nav-user { display: flex; align-items: center; gap: 10px; }
 .nav-user-name { font-family: var(--font); font-size: 13px; font-weight: 600; }
+.nav-badge { background: var(--red); color: #fff; border: 2px solid var(--black); font-size: 10px; font-weight: 800; padding: 1px 7px; margin-left: 6px; }
 .btn-logout { background: transparent; border: var(--border); font-family: var(--font); font-size: 12px; font-weight: 700; padding: 6px 14px; cursor: pointer; transition: background 0.15s; }
 .btn-logout:hover { background: var(--gray); }
 
@@ -89,7 +90,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .marquee-track span { font-family: var(--font-disp); font-size: 20px; letter-spacing: 1px; color: var(--white); }
 .marquee-track .dot { color: var(--orange); }
 
-/* ── SEARCH ─ */
+/* ── SEARCH  */
 .search-section { padding: 32px 5vw; background: var(--gray); border-bottom: var(--border); }
 .search-wrap { max-width: 900px; margin: 0 auto; display: flex; align-items: stretch; border: var(--border); box-shadow: var(--shadow-lg); background: var(--white); }
 .search-field { flex: 1; display: flex; flex-direction: column; padding: 14px 18px; border-right: var(--border); cursor: pointer; transition: background 0.15s; }
@@ -138,11 +139,40 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .btn-edit:hover { transform: translate(-2px,-2px); box-shadow: 3px 3px 0 var(--black); }
 .btn-dispo { flex: 1; background: var(--white); border: 2px solid var(--black); font-family: var(--font); font-size: 11px; font-weight: 800; padding: 9px 6px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s; }
 .btn-dispo:hover { transform: translate(-2px,-2px); box-shadow: 3px 3px 0 var(--black); }
+.btn-contact { flex: 1; background: var(--cyan); border: 2px solid var(--black); font-family: var(--font); font-size: 11px; font-weight: 800; padding: 9px 6px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s; }
+.btn-contact:hover { transform: translate(-2px,-2px); box-shadow: 3px 3px 0 var(--black); }
 .empty-state { text-align: center; padding: 60px 20px; grid-column: 1/-1; }
 .empty-state h3 { font-family: var(--font-disp); font-size: 36px; margin-bottom: 12px; }
 .empty-state p { color: var(--ink-soft); font-size: 15px; }
 .loading-grid { grid-column: 1/-1; display: flex; justify-content: center; padding: 60px; }
 .spinner { width: 40px; height: 40px; border: 4px solid var(--gray2); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; }
+
+/* ── MESSAGES ── */
+.messages-section { padding: 32px 5vw; max-width: 1100px; margin: 0 auto; }
+.msg-title { font-family: var(--font-disp); font-size: 40px; letter-spacing: 1px; margin-bottom: 16px; }
+.msg-layout { display: grid; grid-template-columns: 320px 1fr; gap: 16px; height: calc(100vh - 220px); min-height: 420px; }
+.msg-list { border: var(--border); box-shadow: var(--shadow); overflow-y: auto; background: var(--white); }
+.msg-item { padding: 14px 16px; border-bottom: 2px solid var(--black); cursor: pointer; display: flex; justify-content: space-between; gap: 8px; align-items: center; transition: background .15s; }
+.msg-item:hover { background: var(--gray); }
+.msg-item.active { background: var(--yellow); }
+.msg-item-name { font-family: var(--font); font-weight: 800; font-size: 13px; }
+.msg-item-last { font-size: 11px; color: var(--ink-soft); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 190px; }
+.msg-item-unread { background: var(--red); color: #fff; border: 2px solid var(--black); font-size: 10px; font-weight: 800; padding: 2px 7px; flex-shrink: 0; }
+.msg-thread { border: var(--border); box-shadow: var(--shadow); display: flex; flex-direction: column; background: var(--white); }
+.thread-head { padding: 12px 16px; border-bottom: var(--border); background: var(--yellow); font-family: var(--font); font-weight: 800; display: flex; align-items: center; gap: 10px; }
+.thread-sub { font-size: 11px; color: var(--ink-soft); font-weight: 600; }
+.thread-back { display: none; background: var(--white); border: 2px solid var(--black); font-weight: 800; padding: 4px 10px; cursor: pointer; }
+.thread-bubbles { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: var(--gray); }
+.bubble { max-width: 75%; padding: 10px 14px; border: 2px solid var(--black); font-size: 13px; line-height: 1.45; box-shadow: 2px 2px 0 var(--black); }
+.bubble.them { background: var(--white); align-self: flex-start; }
+.bubble.me { background: var(--cyan); align-self: flex-end; }
+.bubble-time { display: block; font-size: 9px; color: var(--ink-mute); margin-top: 4px; text-align: right; }
+.thread-input { display: flex; gap: 8px; padding: 12px; border-top: var(--border); }
+.thread-input input { flex: 1; padding: 12px 14px; border: var(--border); font-family: var(--font-body); font-size: 13px; outline: none; }
+.thread-input input:focus { box-shadow: var(--shadow); }
+.thread-input button { background: var(--orange); color: #fff; border: var(--border); box-shadow: var(--shadow); font-family: var(--font); font-weight: 800; padding: 0 18px; cursor: pointer; }
+.thread-placeholder { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--ink-mute); font-family: var(--font); }
+.msg-empty { padding: 24px; text-align: center; color: var(--ink-mute); font-size: 13px; }
 
 /* ── AUTH MODAL ── */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 300; display: none; align-items: center; justify-content: center; }
@@ -196,12 +226,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 textarea.form-input { min-height: 100px; resize: vertical; }
 
 /* ── PHOTO UPLOAD ── */
-.upload-zone {
-  border: var(--border); border-style: dashed;
-  padding: 32px; text-align: center; cursor: pointer;
-  transition: background 0.15s; position: relative;
-  background: var(--white); margin-bottom: 16px;
-}
+.upload-zone { border: var(--border); border-style: dashed; padding: 32px; text-align: center; cursor: pointer; transition: background 0.15s; position: relative; background: var(--white); margin-bottom: 16px; }
 .upload-zone:hover { background: var(--gray); }
 .upload-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
 .upload-zone-icon { font-size: 32px; margin-bottom: 8px; }
@@ -220,9 +245,6 @@ textarea.form-input { min-height: 100px; resize: vertical; }
 /* ── LISTING PHOTOS ── */
 .listing-photos { position: relative; height: 180px; overflow: hidden; border-bottom: var(--border); }
 .listing-photos img { width: 100%; height: 100%; object-fit: cover; }
-.listing-photos-nav { position: absolute; bottom: 8px; right: 8px; display: flex; gap: 4px; }
-.listing-photos-dot { width: 6px; height: 6px; border-radius: 99px; background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.3); }
-.listing-photos-dot.active { background: var(--white); }
 
 /* ── TOAST ── */
 .toast { position: fixed; bottom: 24px; right: 24px; z-index: 999; background: var(--black); color: var(--white); border: var(--border); box-shadow: var(--shadow-lg); padding: 14px 20px; font-family: var(--font); font-size: 13px; font-weight: 600; transform: translateY(100px); opacity: 0; transition: transform 0.3s, opacity 0.3s; max-width: 320px; }
@@ -264,6 +286,13 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
   .hide-mob { display: none; }
 }
+@media (max-width: 860px) {
+  .msg-layout { grid-template-columns: 1fr; }
+  .msg-thread { display: none; }
+  .msg-layout.thread-open .msg-list { display: none; }
+  .msg-layout.thread-open .msg-thread { display: flex; }
+  .thread-back { display: inline-block; }
+}
 @media (max-width: 600px) {
   .listings-grid { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
@@ -300,6 +329,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
     </div>
     <div id="nav-user" style="display:none;" class="nav-user">
       <span class="nav-user-name" id="nav-user-name"></span>
+      <a onclick="showPage('messages')" class="hide-mob">💬 Messages<span class="nav-badge" id="msg-badge" style="display:none;">0</span></a>
       <a onclick="showPage('dashboard')" class="hide-mob">Mon espace</a>
       <button class="btn-logout" onclick="logout()">Déconnexion</button>
     </div>
@@ -308,8 +338,6 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 
 <!-- ══ PAGE HOME ══ -->
 <div class="page active" id="page-home">
-
-  <!-- HERO -->
   <section class="hero">
     <div class="hero-left">
       <div class="hero-tag">🇨🇮 Abidjan · Côte d'Ivoire</div>
@@ -363,7 +391,6 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
     </div>
   </section>
 
-  <!-- MARQUEE -->
   <div class="marquee-section">
     <div class="marquee-track">
       <span>COCODY</span><span class="dot"> ✦ </span><span>PLATEAU</span><span class="dot"> ✦ </span><span>MARCORY</span><span class="dot"> ✦ </span><span>YOPOUGON</span><span class="dot"> ✦ </span><span>RIVIERA</span><span class="dot"> ✦ </span><span>TREICHVILLE</span><span class="dot"> ✦ </span><span>BINGERVILLE</span><span class="dot"> ✦ </span><span>DEUX PLATEAUX</span><span class="dot"> ✦ </span><span>ADJAMÉ</span><span class="dot"> ✦ </span>
@@ -371,7 +398,6 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
     </div>
   </div>
 
-  <!-- SEARCH -->
   <div class="search-section">
     <div class="search-wrap">
       <div class="search-field">
@@ -397,20 +423,16 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
         <label>Budget max / nuit</label>
         <input type="number" id="search-budget" placeholder="Ex: 100000" onchange="filterListings()"/>
       </div>
-      <button class="search-btn" onclick="filterListings()">
-        🔍 Chercher
-      </button>
+      <button class="search-btn" onclick="filterListings()">🔍 Chercher</button>
     </div>
   </div>
 
-  <!-- STATS -->
   <div class="stats-section">
     <div class="stat-card"><div class="stat-num" id="stat-residences">0<span class="accent">+</span></div><div class="stat-label">Résidences disponibles à Abidjan</div></div>
     <div class="stat-card"><div class="stat-num">0<span class="accent"> arnaque</span></div><div class="stat-label">Photos HD réelles, prix garantis, propriétaires vérifiés</div></div>
     <div class="stat-card"><div class="stat-num">24<span class="accent">h</span></div><div class="stat-label">Délai moyen de réponse d'un propriétaire</div></div>
   </div>
 
-  <!-- LISTINGS -->
   <section class="listings-section" id="listings-anchor">
     <div class="section-header">
       <h2 class="section-title">LES R DU MOMENT 🔥</h2>
@@ -420,7 +442,6 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <div class="footer-grid">
       <div class="footer-brand">
@@ -455,6 +476,19 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
     <div id="locataire-section">
       <div class="dash-section-title">MES FAVORIS</div>
       <div id="mes-favoris" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE MESSAGES ══ -->
+<div class="page" id="page-messages">
+  <div class="messages-section">
+    <div class="msg-title">MESSAGERIE 💬</div>
+    <div class="msg-layout" id="msg-layout">
+      <div class="msg-list" id="msg-list"><div class="msg-empty">Aucune conversation pour l'instant.</div></div>
+      <div class="msg-thread" id="msg-thread">
+        <div class="thread-placeholder">Sélectionne une conversation 👈</div>
+      </div>
     </div>
   </div>
 </div>
@@ -539,7 +573,6 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 </div>
 
 <!-- ══ AUTH MODALS ══ -->
-<!-- SIGNUP -->
 <div class="modal-overlay" id="modal-signup">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('signup')">✕</button>
@@ -578,7 +611,6 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
   </div>
 </div>
 
-<!-- LOGIN -->
 <div class="modal-overlay" id="modal-login">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('login')">✕</button>
@@ -606,7 +638,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 // ══════════════════════════════════════
 // VERSION
 // ══════════════════════════════════════
-console.log('%cMA R v4.1 — version corrigée', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
+console.log('%cMA R v5 — Messagerie temps réel', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
 
 // ══════════════════════════════════════
 // CONFIG
@@ -639,15 +671,21 @@ let allResidences = [];
 let editingId = null;
 let existingPhotos = [];
 let selectedFiles = [];
+let allMessages = [];
+let activeConvo = null;
+let profileCache = {};
+let msgChannel = null;
 
 // ══════════════════════════════════════
 // NAVIGATION & UI
 // ══════════════════════════════════════
 function showPage(name) {
+  if (name === 'messages' && !currentUser) { openModal('login'); return; }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   window.scrollTo(0, 0);
   if (name === 'dashboard') loadDashboard();
+  if (name === 'messages') loadMessages();
 }
 
 function openModal(name) { document.getElementById('modal-' + name).classList.add('open'); }
@@ -669,10 +707,11 @@ function msgErreur(e) {
   if (e && e.name === 'AbortError') return 'Réponse trop lente du serveur. Clique à nouveau pour réessayer.';
   return 'Connexion au serveur impossible. Vérifie ton internet puis réessaie.';
 }
+function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 // ══════════════════════════════════════
-// CLOUDINARY ⚡ (avec bascule Supabase si échec)
-// ══════════════════════════════════════
+// CLOUDINARY ⚡
+// ═════════════════════════════════════
 function optUrl(url, w = 900) {
   if (!url) return url;
   if (url.includes('res.cloudinary.com')) return url.replace('/upload/', '/upload/q_auto,f_auto,w_' + w + '/');
@@ -680,7 +719,6 @@ function optUrl(url, w = 900) {
 }
 
 async function uploadPhoto(file, i) {
-  // 1) Cloudinary (rapide + compressé)
   try {
     const fd = new FormData();
     fd.append('file', file);
@@ -688,18 +726,13 @@ async function uploadPhoto(file, i) {
     fd.append('folder', 'mar');
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 60000);
-    const res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/image/upload', {
-      method: 'POST', body: fd, signal: controller.signal
-    });
+    const res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/image/upload', { method: 'POST', body: fd, signal: controller.signal });
     clearTimeout(timer);
     if (res.ok) {
       const json = await res.json();
       if (json.secure_url) return json.secure_url;
     }
-  } catch (e) {
-    console.warn('Cloudinary échec, bascule Supabase :', e);
-  }
-  // 2) Filet de sécurité Supabase
+  } catch (e) { console.warn('Cloudinary échec, bascule Supabase :', e); }
   try {
     const ext = file.name.split('.').pop();
     const fileName = currentUser.id + '/' + Date.now() + '_' + i + '.' + ext;
@@ -764,6 +797,9 @@ async function login() {
 async function logout() {
   try { await sb.auth.signOut(); } catch (e) {}
   currentUser = null; currentProfile = null;
+  allMessages = []; activeConvo = null;
+  stopRealtime();
+  updateBadge();
   updateNavUI(false);
   showPage('home');
   showToast('À bientôt !');
@@ -779,6 +815,9 @@ async function loadUser(user) {
       currentProfile = fallback;
     } else currentProfile = profile;
     updateNavUI(true, currentProfile);
+    loadResidences();
+    loadMessages();
+    startRealtime();
   } catch (e) { console.error('Erreur chargement profil :', e); }
 }
 
@@ -817,6 +856,12 @@ function renderCard(r, i, actionsHtml = '') {
     ? '<div class="listing-photos"><img src="' + optUrl(r.photos[0]) + '" alt="' + r.titre + '" loading="lazy"/>' + dispoBadge + '<div class="listing-type-badge">' + (r.type || 'Résidence') + '</div></div>'
     : '<div class="listing-img ' + color + '">' + emoji + dispoBadge + '<div class="listing-type-badge">' + (r.type || 'Résidence') + '</div></div>';
 
+  // Bouton contacter pour les visiteurs (annonces réelles, pas les miennes)
+  let publicActions = actionsHtml;
+  if (!publicActions && !r.demo && !(currentUser && r.proprietaire_id === currentUser.id)) {
+    publicActions = '<div class="card-actions"><button class="btn-contact" onclick="contactOwner(\'' + r.id + '\')">💬 Contacter le propriétaire</button></div>';
+  }
+
   return '<div class="listing-card">' + imgHtml +
     '<div class="listing-body">' +
     '<div class="listing-loc">📍 ' + r.commune + ' · ' + r.quartier + '</div>' +
@@ -825,7 +870,7 @@ function renderCard(r, i, actionsHtml = '') {
     '<div class="listing-footer">' +
     '<div class="listing-price">' + formatPrice(r.prix_nuit) + ' <span>FCFA/nuit</span></div>' +
     '<div class="listing-rating">★ ' + (r.note_moyenne > 0 ? r.note_moyenne.toFixed(1) : 'Nouveau') + '</div>' +
-    '</div></div>' + actionsHtml + '</div>';
+    '</div></div>' + publicActions + '</div>';
 }
 
 function renderDemoCards() {
@@ -877,6 +922,188 @@ function filterListings() {
   } else {
     grid.innerHTML = filtered.map((r, i) => renderCard(r, i)).join('');
   }
+}
+
+// ══════════════════════════════════════
+// MESSAGERIE 💬
+// ══════════════════════════════════════
+function contactOwner(residenceId) {
+  if (!currentUser) { showToast('Connecte-toi pour contacter le propriétaire', 'error'); return openModal('login'); }
+  const r = allResidences.find(x => x.id === residenceId);
+  if (!r) return;
+  if (r.proprietaire_id === currentUser.id) return showToast("C'est ta propre annonce 😄", 'error');
+  showPage('messages');
+  openThread(r.proprietaire_id, residenceId);
+}
+
+async function loadMessages() {
+  if (!currentUser) return;
+  try {
+    const { data, error } = await sb.from('messages').select('*')
+      .or('expediteur_id.eq.' + currentUser.id + ',destinataire_id.eq.' + currentUser.id)
+      .order('created_at', { ascending: true });
+    if (error) { console.error(error); return; }
+    allMessages = data || [];
+
+    const ids = [...new Set(allMessages.map(m => m.expediteur_id === currentUser.id ? m.destinataire_id : m.expediteur_id))];
+    if (ids.length) {
+      const { data: profs } = await sb.from('profiles').select('id, prenom, nom').in('id', ids);
+      (profs || []).forEach(p => profileCache[p.id] = p);
+    }
+    renderMsgList();
+    updateBadge();
+    if (activeConvo) renderThread();
+  } catch (e) { console.error('Erreur messages :', e); }
+}
+
+function renderMsgList() {
+  const list = document.getElementById('msg-list');
+  if (!currentUser || !list) return;
+  const groups = {};
+  allMessages.forEach(m => {
+    const other = m.expediteur_id === currentUser.id ? m.destinataire_id : m.expediteur_id;
+    if (!groups[other]) groups[other] = { other, last: m, unread: 0 };
+    groups[other].last = m;
+    if (m.destinataire_id === currentUser.id && !m.lu) groups[other].unread++;
+  });
+  const arr = Object.values(groups).sort((a, b) => new Date(b.last.created_at) - new Date(a.last.created_at));
+  if (!arr.length) {
+    list.innerHTML = "<div class='msg-empty'>Aucune conversation pour l'instant.<br/>Contacte un propriétaire depuis une annonce !</div>";
+    return;
+  }
+  list.innerHTML = arr.map(g => {
+    const p = profileCache[g.other];
+    const name = p ? (p.prenom + ' ' + (p.nom || '')).trim() : 'Utilisateur';
+    const active = activeConvo && activeConvo.userId === g.other ? ' active' : '';
+    return '<div class="msg-item' + active + '" onclick="openThread(\'' + g.other + '\')">' +
+      '<div><div class="msg-item-name">' + escapeHtml(name) + '</div><div class="msg-item-last">' + escapeHtml(g.last.contenu) + '</div></div>' +
+      (g.unread ? '<span class="msg-item-unread">' + g.unread + '</span>' : '') +
+      '</div>';
+  }).join('');
+}
+
+function openThread(otherId, residenceId) {
+  if (!residenceId) {
+    for (let i = allMessages.length - 1; i >= 0; i--) {
+      const m = allMessages[i];
+      if (m.residence_id && (m.expediteur_id === otherId || m.destinataire_id === otherId)) { residenceId = m.residence_id; break; }
+    }
+  }
+  activeConvo = { userId: otherId, residenceId: residenceId || null };
+  document.getElementById('msg-layout').classList.add('thread-open');
+  renderThread();
+  renderMsgList();
+
+  const toRead = allMessages.filter(m => m.expediteur_id === otherId && m.destinataire_id === currentUser.id && !m.lu);
+  if (toRead.length) {
+    toRead.forEach(m => m.lu = true);
+    updateBadge();
+    renderMsgList();
+    sb.from('messages').update({ lu: true }).in('id', toRead.map(m => m.id)).then(() => {});
+  }
+}
+
+function closeThread() {
+  activeConvo = null;
+  document.getElementById('msg-layout').classList.remove('thread-open');
+  renderThread();
+  renderMsgList();
+}
+
+function bubbleHtml(m, mine) {
+  const t = new Date(m.created_at).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  return '<div class="bubble ' + (mine ? 'me' : 'them') + '">' + escapeHtml(m.contenu) + '<span class="bubble-time">' + t + '</span></div>';
+}
+
+function renderThread() {
+  const thread = document.getElementById('msg-thread');
+  if (!thread) return;
+  if (!activeConvo) {
+    thread.innerHTML = '<div class="thread-placeholder">Sélectionne une conversation 👈</div>';
+    return;
+  }
+  const other = activeConvo.userId;
+  const p = profileCache[other];
+  const name = p ? (p.prenom + ' ' + (p.nom || '')).trim() : 'Utilisateur';
+  let sub = '';
+  if (activeConvo.residenceId) {
+    const r = allResidences.find(x => x.id === activeConvo.residenceId);
+    if (r) sub = 'À propos : ' + r.titre;
+  }
+  const msgs = allMessages.filter(m =>
+    (m.expediteur_id === other && m.destinataire_id === currentUser.id) ||
+    (m.expediteur_id === currentUser.id && m.destinataire_id === other));
+
+  thread.innerHTML =
+    '<div class="thread-head"><button class="thread-back" onclick="closeThread()">←</button>' +
+    '<div><div>' + escapeHtml(name) + '</div><div class="thread-sub">' + escapeHtml(sub) + '</div></div></div>' +
+    '<div class="thread-bubbles" id="thread-bubbles">' + msgs.map(m => bubbleHtml(m, m.expediteur_id === currentUser.id)).join('') + '</div>' +
+    '<div class="thread-input"><input id="msg-input" placeholder="Écris ton message ici..." onkeydown="if(event.key===\'Enter\') sendMessage()"/>' +
+    '<button onclick="sendMessage()">➤</button></div>';
+
+  const b = document.getElementById('thread-bubbles');
+  if (b) b.scrollTop = b.scrollHeight;
+}
+
+function appendBubble(m, mine) {
+  const b = document.getElementById('thread-bubbles');
+  if (!b) return;
+  b.insertAdjacentHTML('beforeend', bubbleHtml(m, mine));
+  b.scrollTop = b.scrollHeight;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('msg-input');
+  if (!input || !activeConvo) return;
+  const txt = input.value.trim();
+  if (!txt) return;
+  input.value = '';
+
+  const payload = {
+    expediteur_id: currentUser.id,
+    destinataire_id: activeConvo.userId,
+    contenu: txt,
+    residence_id: activeConvo.residenceId
+  };
+  appendBubble({ ...payload, created_at: new Date().toISOString() }, true);
+
+  try {
+    const { error } = await sb.from('messages').insert(payload);
+    if (error) showToast('Message non envoyé : ' + error.message, 'error');
+  } catch (e) { showToast(msgErreur(e), 'error'); }
+}
+
+function updateBadge() {
+  const badge = document.getElementById('msg-badge');
+  if (!badge || !currentUser) return;
+  const n = allMessages.filter(m => m.destinataire_id === currentUser.id && !m.lu).length;
+  badge.style.display = n ? 'inline-block' : 'none';
+  badge.textContent = n;
+}
+
+// ── TEMPS RÉEL ⚡ ──
+function startRealtime() {
+  stopRealtime();
+  if (!currentUser) return;
+  msgChannel = sb.channel('mar-messages-' + currentUser.id)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: 'destinataire_id=eq.' + currentUser.id }, payload => {
+      const m = payload.new;
+      allMessages.push(m);
+      if (!profileCache[m.expediteur_id]) {
+        sb.from('profiles').select('id, prenom, nom').eq('id', m.expediteur_id).single().then(({ data }) => { if (data) profileCache[data.id] = data; renderMsgList(); });
+      }
+      if (activeConvo && activeConvo.userId === m.expediteur_id) {
+        appendBubble(m, false);
+        m.lu = true;
+        sb.from('messages').update({ lu: true }).eq('id', m.id).then(() => {});
+      }
+      renderMsgList();
+      updateBadge();
+    })
+    .subscribe();
+}
+function stopRealtime() {
+  if (msgChannel) { sb.removeChannel(msgChannel); msgChannel = null; }
 }
 
 // ══════════════════════════════════════
@@ -934,7 +1161,7 @@ async function toggleDispo(id, etaitOccupe) {
 }
 
 // ══════════════════════════════════════
-// ÉDITION D'UNE ANNONCE
+// ÉDITION
 // ══════════════════════════════════════
 async function editResidence(id) {
   try {
@@ -985,11 +1212,7 @@ function startPublish() {
 function renderExistingPhotos() {
   const wrap = document.getElementById('existing-photos');
   const label = document.getElementById('existing-count');
-  if (existingPhotos.length === 0) {
-    wrap.style.display = 'none'; label.style.display = 'none';
-    wrap.innerHTML = '';
-    return;
-  }
+  if (existingPhotos.length === 0) { wrap.style.display = 'none'; label.style.display = 'none'; wrap.innerHTML = ''; return; }
   wrap.style.display = 'grid'; label.style.display = 'block';
   wrap.innerHTML = existingPhotos.map((url, i) =>
     '<div class="photo-thumb"><img src="' + optUrl(url, 400) + '" alt="Photo"/>' +
@@ -1055,9 +1278,7 @@ async function publierResidence() {
       showAlert('publish-alert', 'Erreur : ' + error.message, 'error');
     } else {
       const mode = editingId ? 'modifiée' : 'publiée';
-      selectedFiles = [];
-      existingPhotos = [];
-      editingId = null;
+      selectedFiles = []; existingPhotos = []; editingId = null;
       document.getElementById('photos-preview').innerHTML = '';
       document.getElementById('photo-count').textContent = '0 / 8 photos';
       showAlert('publish-alert', '🎉 Annonce ' + mode + ' avec succès !', 'success');
@@ -1074,12 +1295,11 @@ async function publierResidence() {
 }
 
 // ══════════════════════════════════════
-// PHOTO UPLOAD (sélection locale)
+// PHOTOS (sélection locale)
 // ══════════════════════════════════════
 function addPhotos(files) {
   const remaining = 8 - (selectedFiles.length + existingPhotos.length);
   const toAdd = files.slice(0, remaining);
-
   toAdd.forEach(file => {
     if (file.size > 5 * 1024 * 1024) { showToast(file.name + ' dépasse 5MB — ignoré', 'error'); return; }
     if (!file.type.startsWith('image/')) return;
@@ -1097,12 +1317,10 @@ function renderPreviews() {
     return '<div class="photo-thumb"><img src="' + url + '" alt="Photo ' + (i+1) + '"/>' +
       '<button class="photo-thumb-remove" onclick="removePhoto(' + i + ')">✕</button></div>';
   }).join('');
-
   const zone = document.getElementById('upload-zone');
   zone.querySelector('.upload-zone-text').textContent =
     (selectedFiles.length + existingPhotos.length) >= 8 ? 'Maximum atteint (8/8)' : 'Clique ou glisse tes photos ici';
 }
-
 function removePhoto(index) { selectedFiles.splice(index, 1); renderPreviews(); }
 
 function initDragDrop() {
@@ -1134,6 +1352,9 @@ async function init() {
       if (session?.user) setTimeout(() => loadUser(session.user), 0);
     } else if (event === 'SIGNED_OUT') {
       currentUser = null; currentProfile = null;
+      allMessages = []; activeConvo = null;
+      stopRealtime();
+      updateBadge();
       updateNavUI(false);
     }
   });
