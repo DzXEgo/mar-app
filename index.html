@@ -20,7 +20,7 @@
 html { scroll-behavior: smooth; }
 body { font-family: var(--font-body); background: var(--white); color: var(--black); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 
-/* ── NAV ── */
+/* ── NAV ─ */
 nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; height: 64px; background: var(--white); border-bottom: var(--border); }
 .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer; }
 .nav-logo svg { width: 38px; height: 38px; }
@@ -89,7 +89,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .marquee-track span { font-family: var(--font-disp); font-size: 20px; letter-spacing: 1px; color: var(--white); }
 .marquee-track .dot { color: var(--orange); }
 
-/* ── SEARCH ─ */
+/* ── SEARCH ── */
 .search-section { padding: 32px 5vw; background: var(--gray); border-bottom: var(--border); }
 .search-wrap { max-width: 900px; margin: 0 auto; display: flex; align-items: stretch; border: var(--border); box-shadow: var(--shadow-lg); background: var(--white); }
 .search-field { flex: 1; display: flex; flex-direction: column; padding: 14px 18px; border-right: var(--border); cursor: pointer; transition: background 0.15s; }
@@ -319,7 +319,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
         <button class="btn-secondary" onclick="openModal('signup')">Je publie mon annonce</button>
       </div>
       <div class="hero-trust">
-        <div class="trust-avatars"><span>👩</span><span>🏿</span><span>👩</span><span>🏾</span></div>
+        <div class="trust-avatars"><span>👩</span><span>🏿</span><span>👩🏽</span><span>👨🏾</span></div>
         <span>+500 résidences vérifiées</span>
       </div>
     </div>
@@ -595,11 +595,28 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 
 <script>
 // ══════════════════════════════════════
-// SUPABASE CONFIG (PARIS — Ultra rapide à Abidjan 🇨🇮)
+// VERSION (pour vérifier que la bonne version est en ligne)
+// ══════════════════════════════════════
+console.log('%cMA R v3 — anti-blocage + timeout', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
+
+// ══════════════════════════════════════
+// SUPABASE CONFIG (PARIS 🇫🇷)
 // ══════════════════════════════════════
 const SUPABASE_URL = 'https://zfcgxjbylbpdtlsukgjk.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmY2d4amJ5bGJwZHRsc3VrZ2prIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MTIyNDMsImV4cCI6MjEwMjE4ODI0M30.W14VLIWoWxTHWI3NfS_qHuaofLnBG_d5BbNjPwLn_3Q';
+
+// ⏱️ FETCH AVEC TIMEOUT : plus JAMAIS de requête endormie qui bouche le tuyau
+function fetchWithTimeout(url, options = {}) {
+  const isStorage = String(url).includes('/storage/');
+  const maxTime = isStorage ? 60000 : 15000; // 60s photos, 15s le reste
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), maxTime);
+  return fetch(url, { ...options, signal: controller.signal })
+    .finally(() => clearTimeout(timer));
+}
+
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  global: { fetch: fetchWithTimeout },
   auth: {
     persistSession: true,
     autoRefreshToken: true,
@@ -638,7 +655,7 @@ function switchModal(from, to) {
 }
 
 // ══════════════════════════════════════
-// TOAST
+// TOAST & ALERTS
 // ══════════════════════════════════════
 function showToast(msg, type = 'success') {
   const t = document.getElementById('toast');
@@ -655,8 +672,13 @@ function hideAlert(id) {
   document.getElementById(id).className = 'alert';
 }
 
+function msgErreur(e) {
+  if (e && e.name === 'AbortError') return 'Réponse trop lente du serveur (connexion encombrée). Clique à nouveau pour réessayer.';
+  return 'Connexion au serveur impossible. Vérifie ton internet puis réessaie.';
+}
+
 // ══════════════════════════════════════
-// AUTH
+// AUTH (ANTI-BLOCAGE ✅)
 // ══════════════════════════════════════
 async function signup() {
   const prenom = document.getElementById('signup-prenom').value.trim();
@@ -676,22 +698,24 @@ async function signup() {
   btn.disabled = true; btn.textContent = 'CRÉATION EN COURS...';
   hideAlert('signup-alert');
 
-  const { data, error } = await sb.auth.signUp({
-    email,
-    password,
-    options: {
-      data: { prenom, nom, role }
+  try {
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password,
+      options: { data: { prenom, nom, role } }
+    });
+
+    if (error) {
+      showAlert('signup-alert', error.message, 'error');
+    } else {
+      showAlert('signup-alert', '🎉 Compte créé ! Vérifie ton email pour confirmer puis connecte-toi.', 'success');
+      setTimeout(() => { closeModal('signup'); openModal('login'); }, 3000);
     }
-  });
-
-  if (error) {
+  } catch (e) {
+    showAlert('signup-alert', msgErreur(e), 'error');
+  } finally {
     btn.disabled = false; btn.textContent = 'CRÉER MON COMPTE';
-    return showAlert('signup-alert', error.message, 'error');
   }
-
-  btn.disabled = false; btn.textContent = 'CRÉER MON COMPTE';
-  showAlert('signup-alert', '🎉 Compte créé ! Vérifie ton email pour confirmer puis connecte-toi.', 'success');
-  setTimeout(() => { closeModal('signup'); openModal('login'); }, 3000);
 }
 
 async function login() {
@@ -706,21 +730,25 @@ async function login() {
   btn.disabled = true; btn.textContent = 'CONNEXION...';
   hideAlert('login-alert');
 
-  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
 
-  btn.disabled = false; btn.textContent = 'SE CONNECTER';
-
-  if (error) {
-    return showAlert('login-alert', 'Email ou mot de passe incorrect.', 'error');
+    if (error) {
+      showAlert('login-alert', 'Email ou mot de passe incorrect.', 'error');
+    } else {
+      await loadUser(data.user);
+      closeModal('login');
+      showToast('Bienvenue sur MA R !');
+    }
+  } catch (e) {
+    showAlert('login-alert', msgErreur(e), 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'SE CONNECTER';
   }
-
-  await loadUser(data.user);
-  closeModal('login');
-  showToast('Bienvenue sur MA R !');
 }
 
 async function logout() {
-  await sb.auth.signOut();
+  try { await sb.auth.signOut(); } catch (e) {}
   currentUser = null; currentProfile = null;
   updateNavUI(false);
   showPage('home');
@@ -728,16 +756,20 @@ async function logout() {
 }
 
 async function loadUser(user) {
-  currentUser = user;
-  const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
-  if (!profile || error) {
-    const fallback = { id: user.id, prenom: user.email.split('@')[0], nom: '', role: 'locataire' };
-    await sb.from('profiles').upsert(fallback);
-    currentProfile = fallback;
-  } else {
-    currentProfile = profile;
+  try {
+    currentUser = user;
+    const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
+    if (!profile || error) {
+      const fallback = { id: user.id, prenom: user.email.split('@')[0], nom: '', role: 'locataire' };
+      await sb.from('profiles').upsert(fallback);
+      currentProfile = fallback;
+    } else {
+      currentProfile = profile;
+    }
+    updateNavUI(true, currentProfile);
+  } catch (e) {
+    console.error('Erreur chargement profil :', e);
   }
-  updateNavUI(true, currentProfile);
 }
 
 function updateNavUI(loggedIn, profile = null) {
@@ -802,19 +834,24 @@ async function loadResidences() {
   const grid = document.getElementById('listings-grid');
   grid.innerHTML = '<div class="loading-grid"><div class="spinner"></div></div>';
 
-  const { data, error } = await sb.from('residences').select('*').eq('disponible', true).order('created_at', { ascending: false });
+  try {
+    const { data, error } = await sb.from('residences').select('*').eq('disponible', true).order('created_at', { ascending: false });
 
-  if (error || !data || data.length === 0) {
-    // Afficher les démos si pas encore de vraies annonces
+    if (error || !data || data.length === 0) {
+      grid.innerHTML = renderDemoCards();
+      document.getElementById('stat-residences').innerHTML = '500<span class="accent">+</span>';
+      allResidences = [];
+      return;
+    }
+
+    allResidences = data;
+    document.getElementById('stat-residences').innerHTML = data.length + '<span class="accent">+</span>';
+    grid.innerHTML = data.map((r, i) => renderCard(r, i)).join('');
+  } catch (e) {
     grid.innerHTML = renderDemoCards();
     document.getElementById('stat-residences').innerHTML = '500<span class="accent">+</span>';
     allResidences = [];
-    return;
   }
-
-  allResidences = data;
-  document.getElementById('stat-residences').innerHTML = data.length + '<span class="accent">+</span>';
-  grid.innerHTML = data.map((r, i) => renderCard(r, i)).join('');
 }
 
 function filterListings() {
@@ -851,7 +888,6 @@ async function loadDashboard() {
     document.getElementById('proprio-section').style.display = 'block';
     document.getElementById('locataire-section').style.display = 'none';
 
-    // Charger mes annonces
     const { data: annonces } = await sb.from('residences').select('*').eq('proprietaire_id', currentUser.id);
     document.getElementById('dash-annonces').textContent = (annonces || []).length;
     const grid = document.getElementById('mes-annonces');
@@ -866,15 +902,18 @@ async function loadDashboard() {
     document.getElementById('locataire-section').style.display = 'block';
   }
 
-  // Stats
-  const { count: resaCount } = await sb.from('reservations').select('*', { count: 'exact', head: true }).eq('locataire_id', currentUser.id);
-  const { count: favCount } = await sb.from('favoris').select('*', { count: 'exact', head: true }).eq('utilisateur_id', currentUser.id);
-  document.getElementById('dash-reservations').textContent = resaCount || 0;
-  document.getElementById('dash-favoris').textContent = favCount || 0;
+  try {
+    const { count: resaCount } = await sb.from('reservations').select('*', { count: 'exact', head: true }).eq('locataire_id', currentUser.id);
+    const { count: favCount } = await sb.from('favoris').select('*', { count: 'exact', head: true }).eq('utilisateur_id', currentUser.id);
+    document.getElementById('dash-reservations').textContent = resaCount || 0;
+    document.getElementById('dash-favoris').textContent = favCount || 0;
+  } catch (e) {
+    console.error('Erreur stats dashboard :', e);
+  }
 }
 
 // ══════════════════════════════════════
-// PUBLIER UNE RÉSIDENCE
+// PUBLIER UNE RÉSIDENCE (ANTI-BLOCAGE ✅)
 // ══════════════════════════════════════
 async function publierResidence() {
   if (!currentUser) return openModal('login');
@@ -897,55 +936,59 @@ async function publierResidence() {
   const btn = document.getElementById('publish-btn');
   btn.disabled = true; btn.textContent = 'PUBLICATION EN COURS...';
 
-  // Upload des photos (NOUVEAU SUPABASE PARIS)
-  let photoUrls = [];
-  if (selectedFiles.length > 0) {
-    showAlert('publish-alert', `📸 Upload de ${selectedFiles.length} photo(s) en cours...`, 'success');
-    const progress = document.getElementById('upload-progress');
-    const bar = document.getElementById('upload-progress-bar');
-    progress.classList.add('show');
+  try {
+    let photoUrls = [];
+    if (selectedFiles.length > 0) {
+      showAlert('publish-alert', `📸 Upload de ${selectedFiles.length} photo(s) en cours...`, 'success');
+      const progress = document.getElementById('upload-progress');
+      const bar = document.getElementById('upload-progress-bar');
+      progress.classList.add('show');
 
-    for (let i = 0; i < selectedFiles.length; i++) {
-      const file = selectedFiles[i];
-      const ext = file.name.split('.').pop();
-      const fileName = `${currentUser.id}/${Date.now()}_${i}.${ext}`;
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        const ext = file.name.split('.').pop();
+        const fileName = `${currentUser.id}/${Date.now()}_${i}.${ext}`;
 
-      const { data: uploadData, error: uploadError } = await sb.storage
-        .from('residences-photos')
-        .upload(fileName, file, { contentType: file.type, upsert: false });
+        const { error: uploadError } = await sb.storage
+          .from('residences-photos')
+          .upload(fileName, file, { contentType: file.type, upsert: false });
 
-      if (!uploadError) {
-        const { data: urlData } = sb.storage.from('residences-photos').getPublicUrl(fileName);
-        photoUrls.push(urlData.publicUrl);
+        if (!uploadError) {
+          const { data: urlData } = sb.storage.from('residences-photos').getPublicUrl(fileName);
+          photoUrls.push(urlData.publicUrl);
+        } else {
+          showToast('Photo ' + (i + 1) + ' non envoyée : ' + uploadError.message, 'error');
+        }
+
+        bar.style.width = ((i + 1) / selectedFiles.length * 100) + '%';
       }
-
-      bar.style.width = ((i + 1) / selectedFiles.length * 100) + '%';
+      progress.classList.remove('show');
     }
-    progress.classList.remove('show');
+
+    const { error } = await sb.from('residences').insert({
+      proprietaire_id: currentUser.id,
+      titre, commune, quartier, type,
+      prix_nuit: prix, chambres, capacite, description,
+      equipements, photos: photoUrls,
+      disponible: true
+    });
+
+    if (error) {
+      showAlert('publish-alert', 'Erreur : ' + error.message, 'error');
+    } else {
+      selectedFiles = [];
+      document.getElementById('photos-preview').innerHTML = '';
+      document.getElementById('photo-count').textContent = '0 / 8 photos';
+      showAlert('publish-alert', '🎉 Résidence publiée avec succès !', 'success');
+      showToast('Annonce publiée avec ' + photoUrls.length + ' photo(s) !');
+      setTimeout(() => showPage('dashboard'), 2000);
+    }
+  } catch (e) {
+    showAlert('publish-alert', msgErreur(e), 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'PUBLIER MON ANNONCE →';
+    document.getElementById('upload-progress').classList.remove('show');
   }
-
-  const { error } = await sb.from('residences').insert({
-    proprietaire_id: currentUser.id,
-    titre, commune, quartier, type,
-    prix_nuit: prix, chambres, capacite, description,
-    equipements, photos: photoUrls,
-    disponible: true
-  });
-
-  btn.disabled = false; btn.textContent = 'PUBLIER MON ANNONCE →';
-
-  if (error) {
-    return showAlert('publish-alert', 'Erreur : ' + error.message, 'error');
-  }
-
-  // Reset form
-  selectedFiles = [];
-  document.getElementById('photos-preview').innerHTML = '';
-  document.getElementById('photo-count').textContent = '0 / 8 photos';
-
-  showAlert('publish-alert', '🎉 Résidence publiée avec succès !', 'success');
-  showToast('Annonce publiée avec ' + photoUrls.length + ' photo(s) !');
-  setTimeout(() => showPage('dashboard'), 2000);
 }
 
 // ══════════════════════════════════════
@@ -987,7 +1030,6 @@ function renderPreviews() {
     </div>`;
   }).join('');
 
-  // Drag & drop zone feedback
   const zone = document.getElementById('upload-zone');
   zone.querySelector('.upload-zone-text').textContent =
     selectedFiles.length >= 8 ? 'Maximum atteint (8/8)' : 'Clique ou glisse tes photos ici';
@@ -1019,7 +1061,7 @@ function initDragDrop() {
 
   document.getElementById('photo-input').addEventListener('change', (e) => {
     addPhotos(Array.from(e.target.files));
-    e.target.value = ''; // reset input
+    e.target.value = '';
   });
 }
 
@@ -1027,25 +1069,20 @@ function initDragDrop() {
 // INIT
 // ══════════════════════════════════════
 async function init() {
-  // Charger les résidences immédiatement
   loadResidences();
 
-  // Fermer modal en cliquant outside
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) overlay.classList.remove('open');
     });
   });
 
-  // Init drag & drop photos
   initDragDrop();
 
-  // Écouter les changements d'auth EN PREMIER
-  sb.auth.onAuthStateChange(async (event, session) => {
-    console.log('Auth event:', event, session?.user?.email);
+  sb.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
       if (session?.user) {
-        await loadUser(session.user);
+        setTimeout(() => loadUser(session.user), 0);
       }
     } else if (event === 'SIGNED_OUT') {
       currentUser = null; currentProfile = null;
