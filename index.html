@@ -595,10 +595,10 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 
 <script>
 // ══════════════════════════════════════
-// SUPABASE CONFIG
+// SUPABASE CONFIG (PARIS — Ultra rapide à Abidjan 🇨🇮)
 // ══════════════════════════════════════
-const SUPABASE_URL = 'https://vwqbvflwtujvvotlwccn.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3cWJ2Zmx3dHVqdnZvdGx3Y2NuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5OTM4MTEsImV4cCI6MjA5MzU2OTgxMX0.d_-xEU6eMm2t9q13-3UtcVsZ6LPzEtBAApsybxRwOTI';
+const SUPABASE_URL = 'https://zfcgxjbylbpdtlsukjkb.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmY2d4amJ5bGJwZHRsc3VrZ2prIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MTIyNDMsImV4cCI6MjEwMjE4ODI0M30.W14VLIWoWxTHWI3NfS_qHuaofLnBG_d5BbNjPwLn_3Q';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: {
     persistSession: true,
@@ -676,19 +676,17 @@ async function signup() {
   btn.disabled = true; btn.textContent = 'CRÉATION EN COURS...';
   hideAlert('signup-alert');
 
-  const { data, error } = await sb.auth.signUp({ email, password });
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { prenom, nom, role }
+    }
+  });
 
   if (error) {
     btn.disabled = false; btn.textContent = 'CRÉER MON COMPTE';
     return showAlert('signup-alert', error.message, 'error');
-  }
-
-  // Créer le profil
-  if (data.user) {
-    await sb.from('profiles').upsert({
-      id: data.user.id, prenom, nom, role,
-      telephone: null
-    });
   }
 
   btn.disabled = false; btn.textContent = 'CRÉER MON COMPTE';
@@ -899,7 +897,7 @@ async function publierResidence() {
   const btn = document.getElementById('publish-btn');
   btn.disabled = true; btn.textContent = 'PUBLICATION EN COURS...';
 
-  // Upload des photos
+  // Upload des photos (NOUVEAU SUPABASE PARIS)
   let photoUrls = [];
   if (selectedFiles.length > 0) {
     showAlert('publish-alert', `📸 Upload de ${selectedFiles.length} photo(s) en cours...`, 'success');
