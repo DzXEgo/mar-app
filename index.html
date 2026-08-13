@@ -89,7 +89,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .marquee-track span { font-family: var(--font-disp); font-size: 20px; letter-spacing: 1px; color: var(--white); }
 .marquee-track .dot { color: var(--orange); }
 
-/* ── SEARCH ── */
+/* ── SEARCH ─ */
 .search-section { padding: 32px 5vw; background: var(--gray); border-bottom: var(--border); }
 .search-wrap { max-width: 900px; margin: 0 auto; display: flex; align-items: stretch; border: var(--border); box-shadow: var(--shadow-lg); background: var(--white); }
 .search-field { flex: 1; display: flex; flex-direction: column; padding: 14px 18px; border-right: var(--border); cursor: pointer; transition: background 0.15s; }
@@ -122,6 +122,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .listing-img.c5 { background: #2a1a4a; }
 .listing-img.c6 { background: #4a2a1a; }
 .listing-type-badge { position: absolute; bottom: 10px; left: 10px; background: var(--black); color: var(--white); font-family: var(--font); font-size: 9px; font-weight: 800; padding: 3px 10px; text-transform: uppercase; }
+.badge-dispo { position: absolute; top: 10px; right: 10px; background: var(--green); color: #fff; border: 2px solid var(--black); font-family: var(--font); font-size: 9px; font-weight: 800; padding: 3px 10px; text-transform: uppercase; }
+.badge-occupe { position: absolute; top: 10px; right: 10px; background: var(--red); color: #fff; border: 2px solid var(--black); font-family: var(--font); font-size: 9px; font-weight: 800; padding: 3px 10px; text-transform: uppercase; }
 .listing-body { padding: 16px; }
 .listing-loc { font-family: var(--font); font-size: 10px; font-weight: 800; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.8px; }
 .listing-title { font-family: var(--font); font-size: 15px; font-weight: 700; margin: 6px 0 10px; }
@@ -131,6 +133,11 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .listing-price { font-family: var(--font-disp); font-size: 22px; color: var(--orange); }
 .listing-price span { font-family: var(--font-body); font-size: 11px; color: var(--ink-mute); }
 .listing-rating { font-family: var(--font); font-size: 13px; font-weight: 800; }
+.card-actions { display: flex; gap: 8px; padding: 12px 16px 16px; border-top: 2px solid var(--black); }
+.btn-edit { flex: 1; background: var(--yellow); border: 2px solid var(--black); font-family: var(--font); font-size: 11px; font-weight: 800; padding: 9px 6px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s; }
+.btn-edit:hover { transform: translate(-2px,-2px); box-shadow: 3px 3px 0 var(--black); }
+.btn-dispo { flex: 1; background: var(--white); border: 2px solid var(--black); font-family: var(--font); font-size: 11px; font-weight: 800; padding: 9px 6px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s; }
+.btn-dispo:hover { transform: translate(-2px,-2px); box-shadow: 3px 3px 0 var(--black); }
 .empty-state { text-align: center; padding: 60px 20px; grid-column: 1/-1; }
 .empty-state h3 { font-family: var(--font-disp); font-size: 36px; margin-bottom: 12px; }
 .empty-state p { color: var(--ink-soft); font-size: 15px; }
@@ -442,7 +449,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
     </div>
     <div id="proprio-section" style="display:none;">
       <div class="dash-section-title">MES ANNONCES</div>
-      <button class="btn-add" onclick="showPage('publish')">+ Publier une nouvelle R</button>
+      <button class="btn-add" onclick="startPublish()">+ Publier une nouvelle R</button>
       <div id="mes-annonces" style="margin-top:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"></div>
     </div>
     <div id="locataire-section">
@@ -455,8 +462,8 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 <!-- ══ PAGE PUBLISH ══ -->
 <div class="page" id="page-publish">
   <div class="publish-section">
-    <div class="publish-title">PUBLIER MA R</div>
-    <div class="publish-sub">Remplis les informations de ta résidence. Elle sera visible après validation.</div>
+    <div class="publish-title" id="publish-title">PUBLIER MA R</div>
+    <div class="publish-sub" id="publish-sub">Remplis les informations de ta résidence. Elle sera visible après validation.</div>
     <div id="publish-alert" class="alert"></div>
     <div class="form-grid">
       <div class="form-full form-group">
@@ -510,6 +517,8 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
     </div>
 
     <div class="form-section-title">PHOTOS DE LA RÉSIDENCE 📸</div>
+    <div class="photo-count" id="existing-count" style="display:none;">PHOTOS DÉJÀ EN LIGNE (clique ✕ pour retirer)</div>
+    <div class="photos-preview" id="existing-photos" style="display:none;"></div>
     <div class="photo-count" id="photo-count">0 / 8 photos</div>
     <div class="photos-preview" id="photos-preview"></div>
     <div class="upload-progress" id="upload-progress">
@@ -519,7 +528,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
       <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" multiple/>
       <div class="upload-zone-icon">📸</div>
       <div class="upload-zone-text">Clique ou glisse tes photos ici</div>
-      <div class="upload-zone-sub">JPG, PNG · Max 5MB par photo · 8 photos maximum</div>
+      <div class="upload-zone-sub">JPG, PNG · Max 5MB par photo · 8 photos maximum · Envoyées sur Cloudinary ⚡</div>
     </div>
 
     <button class="btn-submit" id="publish-btn" onclick="publierResidence()">PUBLIER MON ANNONCE →</button>
@@ -595,20 +604,21 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 
 <script>
 // ══════════════════════════════════════
-// VERSION (pour vérifier que la bonne version est en ligne)
+// VERSION
 // ══════════════════════════════════════
-console.log('%cMA R v3 — anti-blocage + timeout', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
+console.log('%cMA R v4 — Cloudinary + édition + disponibilité', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
 
 // ══════════════════════════════════════
-// SUPABASE CONFIG (PARIS 🇫🇷)
+// CONFIG
 // ══════════════════════════════════════
 const SUPABASE_URL = 'https://zfcgxjbylbpdtlsukgjk.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmY2d4amJ5bGJwZHRsc3VrZ2prIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MTIyNDMsImV4cCI6MjEwMjE4ODI0M30.W14VLIWoWxTHWI3NfS_qHuaofLnBG_d5BbNjPwLn_3Q';
+const CLOUDINARY_CLOUD = 'l9ikxr21';
+const CLOUDINARY_PRESET = 'mar-photos';
 
-// ⏱️ FETCH AVEC TIMEOUT : plus JAMAIS de requête endormie qui bouche le tuyau
 function fetchWithTimeout(url, options = {}) {
-  const isStorage = String(url).includes('/storage/');
-  const maxTime = isStorage ? 60000 : 15000; // 60s photos, 15s le reste
+  const isUpload = String(url).includes('/storage/') || String(url).includes('cloudinary');
+  const maxTime = isUpload ? 60000 : 15000;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), maxTime);
   return fetch(url, { ...options, signal: controller.signal })
@@ -617,11 +627,7 @@ function fetchWithTimeout(url, options = {}) {
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
   global: { fetch: fetchWithTimeout },
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: false
-  }
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
 });
 
 // ══════════════════════════════════════
@@ -630,6 +636,9 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
 let currentUser = null;
 let currentProfile = null;
 let allResidences = [];
+let editingId = null;
+let existingPhotos = [];
+let selectedFiles = [];
 
 // ══════════════════════════════════════
 // NAVIGATION
@@ -641,44 +650,70 @@ function showPage(name) {
   if (name === 'dashboard') loadDashboard();
 }
 
-// ══════════════════════════════════════
-// MODALS
-// ══════════════════════════════════════
-function openModal(name) {
-  document.getElementById('modal-' + name).classList.add('open');
-}
-function closeModal(name) {
-  document.getElementById('modal-' + name).classList.remove('open');
-}
-function switchModal(from, to) {
-  closeModal(from); openModal(to);
-}
+function openModal(name) { document.getElementById('modal-' + name).classList.add('open'); }
+function closeModal(name) { document.getElementById('modal-' + name).classList.remove('open'); }
+function switchModal(from, to) { closeModal(from); openModal(to); }
 
-// ══════════════════════════════════════
-// TOAST & ALERTS
-// ══════════════════════════════════════
 function showToast(msg, type = 'success') {
   const t = document.getElementById('toast');
   t.textContent = (type === 'success' ? '✅ ' : '❌ ') + msg;
   t.className = 'toast show ' + type;
   setTimeout(() => t.className = 'toast', 3500);
 }
-
 function showAlert(id, msg, type) {
   const el = document.getElementById(id);
   el.textContent = msg; el.className = 'alert ' + type + ' show';
 }
-function hideAlert(id) {
-  document.getElementById(id).className = 'alert';
-}
-
+function hideAlert(id) { document.getElementById(id).className = 'alert'; }
 function msgErreur(e) {
-  if (e && e.name === 'AbortError') return 'Réponse trop lente du serveur (connexion encombrée). Clique à nouveau pour réessayer.';
+  if (e && e.name === 'AbortError') return 'Réponse trop lente du serveur. Clique à nouveau pour réessayer.';
   return 'Connexion au serveur impossible. Vérifie ton internet puis réessaie.';
 }
 
 // ══════════════════════════════════════
-// AUTH (ANTI-BLOCAGE ✅)
+// CLOUDINARY ⚡ (avec bascule Supabase si échec)
+// ══════════════════════════════════════
+function optUrl(url, w = 900) {
+  if (!url) return url;
+  if (url.includes('res.cloudinary.com')) return url.replace('/upload/', '/upload/q_auto,f_auto,w_' + w + '/');
+  return url;
+}
+
+async function uploadPhoto(file, i) {
+  // 1) Cloudinary (rapide + compressé)
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUDINARY_PRESET);
+    fd.append('folder', 'mar');
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 60000);
+    const res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/image/upload', {
+      method: 'POST', body: fd, signal: controller.signal
+    });
+    clearTimeout(timer);
+    if (res.ok) {
+      const json = await res.json();
+      if (json.secure_url) return json.secure_url;
+    }
+  } catch (e) {
+    console.warn('Cloudinary échec, bascule Supabase :', e);
+  }
+  // 2) Filet de sécurité Supabase
+  try {
+    const ext = file.name.split('.').pop();
+    const fileName = currentUser.id + '/' + Date.now() + '_' + i + '.' + ext;
+    const { error } = await sb.storage.from('residences-photos').upload(fileName, file, { contentType: file.type, upsert: false });
+    if (!error) {
+      const { data } = sb.storage.from('residences-photos').getPublicUrl(fileName);
+      return data.publicUrl;
+    }
+  } catch (e) { console.warn('Supabase échec :', e); }
+  return null;
+}
+
+// ══════════════════════════════════════
+// AUTH
 // ══════════════════════════════════════
 async function signup() {
   const prenom = document.getElementById('signup-prenom').value.trim();
@@ -687,44 +722,28 @@ async function signup() {
   const password = document.getElementById('signup-password').value;
   const role = document.getElementById('signup-role').value;
 
-  if (!prenom || !nom || !email || !password) {
-    return showAlert('signup-alert', 'Remplis tous les champs obligatoires.', 'error');
-  }
-  if (password.length < 6) {
-    return showAlert('signup-alert', 'Le mot de passe doit faire au moins 6 caractères.', 'error');
-  }
+  if (!prenom || !nom || !email || !password) return showAlert('signup-alert', 'Remplis tous les champs obligatoires.', 'error');
+  if (password.length < 6) return showAlert('signup-alert', 'Le mot de passe doit faire au moins 6 caractères.', 'error');
 
   const btn = document.getElementById('signup-btn');
   btn.disabled = true; btn.textContent = 'CRÉATION EN COURS...';
   hideAlert('signup-alert');
 
   try {
-    const { data, error } = await sb.auth.signUp({
-      email,
-      password,
-      options: { data: { prenom, nom, role } }
-    });
-
-    if (error) {
-      showAlert('signup-alert', error.message, 'error');
-    } else {
+    const { data, error } = await sb.auth.signUp({ email, password, options: { data: { prenom, nom, role } } });
+    if (error) showAlert('signup-alert', error.message, 'error');
+    else {
       showAlert('signup-alert', '🎉 Compte créé ! Vérifie ton email pour confirmer puis connecte-toi.', 'success');
       setTimeout(() => { closeModal('signup'); openModal('login'); }, 3000);
     }
-  } catch (e) {
-    showAlert('signup-alert', msgErreur(e), 'error');
-  } finally {
-    btn.disabled = false; btn.textContent = 'CRÉER MON COMPTE';
-  }
+  } catch (e) { showAlert('signup-alert', msgErreur(e), 'error'); }
+  finally { btn.disabled = false; btn.textContent = 'CRÉER MON COMPTE'; }
 }
 
 async function login() {
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
-
-  if (!email || !password) {
-    return showAlert('login-alert', 'Remplis tous les champs.', 'error');
-  }
+  if (!email || !password) return showAlert('login-alert', 'Remplis tous les champs.', 'error');
 
   const btn = document.getElementById('login-btn');
   btn.disabled = true; btn.textContent = 'CONNEXION...';
@@ -732,19 +751,14 @@ async function login() {
 
   try {
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      showAlert('login-alert', 'Email ou mot de passe incorrect.', 'error');
-    } else {
+    if (error) showAlert('login-alert', 'Email ou mot de passe incorrect.', 'error');
+    else {
       await loadUser(data.user);
       closeModal('login');
       showToast('Bienvenue sur MA R !');
     }
-  } catch (e) {
-    showAlert('login-alert', msgErreur(e), 'error');
-  } finally {
-    btn.disabled = false; btn.textContent = 'SE CONNECTER';
-  }
+  } catch (e) { showAlert('login-alert', msgErreur(e), 'error'); }
+  finally { btn.disabled = false; btn.textContent = 'SE CONNECTER'; }
 }
 
 async function logout() {
@@ -763,13 +777,9 @@ async function loadUser(user) {
       const fallback = { id: user.id, prenom: user.email.split('@')[0], nom: '', role: 'locataire' };
       await sb.from('profiles').upsert(fallback);
       currentProfile = fallback;
-    } else {
-      currentProfile = profile;
-    }
+    } else currentProfile = profile;
     updateNavUI(true, currentProfile);
-  } catch (e) {
-    console.error('Erreur chargement profil :', e);
-  }
+  } catch (e) { console.error('Erreur chargement profil :', e); }
 }
 
 function updateNavUI(loggedIn, profile = null) {
@@ -792,40 +802,37 @@ function updateNavUI(loggedIn, profile = null) {
 const COLORS = ['c1','c2','c3','c4','c5','c6'];
 const EMOJIS = { villa: '🏠', appartement: '🏢', studio: '🏡', chambre: '🛏' };
 
-function formatPrice(p) {
-  return p ? p.toLocaleString('fr-FR') : '—';
-}
+function formatPrice(p) { return p ? p.toLocaleString('fr-FR') : '—'; }
 
-function renderCard(r, i) {
+function renderCard(r, i, actionsHtml = '') {
   const color = COLORS[i % COLORS.length];
   const emoji = EMOJIS[r.type] || '🏠';
-  const tags = (r.equipements || []).slice(0, 3).map(e => `<span class="listing-tag">${e}</span>`).join('');
+  const tags = (r.equipements || []).slice(0, 3).map(e => '<span class="listing-tag">' + e + '</span>').join('');
   const hasPhoto = r.photos && r.photos.length > 0;
+  const dispoBadge = r.demo ? '' : (r.disponible === false
+    ? '<span class="badge-occupe">Occupé</span>'
+    : '<span class="badge-dispo">Disponible</span>');
 
   const imgHtml = hasPhoto
-    ? `<div class="listing-photos"><img src="${r.photos[0]}" alt="${r.titre}" loading="lazy"/><div class="listing-type-badge">${r.type || 'Résidence'}</div></div>`
-    : `<div class="listing-img ${color}">${emoji}<div class="listing-type-badge">${r.type || 'Résidence'}</div></div>`;
+    ? '<div class="listing-photos"><img src="' + optUrl(r.photos[0]) + '" alt="' + r.titre + '" loading="lazy"/>' + dispoBadge + '<div class="listing-type-badge">' + (r.type || 'Résidence') + '</div></div>'
+    : '<div class="listing-img ' + color + '">' + emoji + dispoBadge + '<div class="listing-type-badge">' + (r.type || 'Résidence') + '</div></div>';
 
-  return `
-    <div class="listing-card">
-      ${imgHtml}
-      <div class="listing-body">
-        <div class="listing-loc">📍 ${r.commune} · ${r.quartier}</div>
-        <div class="listing-title">${r.titre}</div>
-        <div class="listing-tags">${tags || '<span class="listing-tag">🛏 ' + (r.chambres||1) + ' ch.</span>'}</div>
-        <div class="listing-footer">
-          <div class="listing-price">${formatPrice(r.prix_nuit)} <span>FCFA/nuit</span></div>
-          <div class="listing-rating">★ ${r.note_moyenne > 0 ? r.note_moyenne.toFixed(1) : 'Nouveau'}</div>
-        </div>
-      </div>
-    </div>`;
+  return '<div class="listing-card">' + imgHtml +
+    '<div class="listing-body">' +
+    '<div class="listing-loc">📍 ' + r.commune + ' · ' + r.quartier + '</div>' +
+    '<div class="listing-title">' + r.titre + '</div>' +
+    '<div class="listing-tags">' + (tags || '<span class="listing-tag">🛏 ' + (r.chambres || 1) + ' ch.</span>') + '</div>' +
+    '<div class="listing-footer">' +
+    '<div class="listing-price">' + formatPrice(r.prix_nuit) + ' <span>FCFA/nuit</span></div>' +
+    '<div class="listing-rating">★ ' + (r.note_moyenne > 0 ? r.note_moyenne.toFixed(1) : 'Nouveau') + '</div>' +
+    '</div></div>' + actionsHtml + '</div>';
 }
 
 function renderDemoCards() {
   const demos = [
-    { titre: 'Grande villa avec piscine privée', commune: 'Cocody', quartier: 'Bonoumin', type: 'villa', prix_nuit: 120000, chambres: 4, note_moyenne: 4.9, equipements: ['🛏 4 ch.', '❄️ Clim', '🏊 Piscine'] },
-    { titre: 'Appart moderne vue lagune', commune: 'Plateau', quartier: 'Centre', type: 'appartement', prix_nuit: 65000, chambres: 2, note_moyenne: 4.8, equipements: ['🛏 2 ch.', '📶 Fibre', '🔒 Sécurisé'] },
-    { titre: 'Studio équipé tout inclus', commune: 'Marcory', quartier: 'Anoumabo', type: 'studio', prix_nuit: 25000, chambres: 1, note_moyenne: 4.7, equipements: ['🛏 1 ch.', '🍳 Cuisine', '📺 TV 4K'] },
+    { demo: true, titre: 'Grande villa avec piscine privée', commune: 'Cocody', quartier: 'Bonoumin', type: 'villa', prix_nuit: 120000, chambres: 4, note_moyenne: 4.9, equipements: ['🛏 4 ch.', '❄️ Clim', '🏊 Piscine'] },
+    { demo: true, titre: 'Appart moderne vue lagune', commune: 'Plateau', quartier: 'Centre', type: 'appartement', prix_nuit: 65000, chambres: 2, note_moyenne: 4.8, equipements: ['🛏 2 ch.', '📶 Fibre', '🔒 Sécurisé'] },
+    { demo: true, titre: 'Studio équipé tout inclus', commune: 'Marcory', quartier: 'Anoumabo', type: 'studio', prix_nuit: 25000, chambres: 1, note_moyenne: 4.7, equipements: ['🛏 1 ch.', '🍳 Cuisine', '📺 TV 4K'] },
   ];
   return demos.map((r, i) => renderCard(r, i)).join('');
 }
@@ -835,7 +842,7 @@ async function loadResidences() {
   grid.innerHTML = '<div class="loading-grid"><div class="spinner"></div></div>';
 
   try {
-    const { data, error } = await sb.from('residences').select('*').eq('disponible', true).order('created_at', { ascending: false });
+    const { data, error } = await sb.from('residences').select('*').order('created_at', { ascending: false });
 
     if (error || !data || data.length === 0) {
       grid.innerHTML = renderDemoCards();
@@ -858,18 +865,15 @@ function filterListings() {
   const commune = document.getElementById('search-commune').value;
   const type = document.getElementById('search-type').value;
   const budget = parseInt(document.getElementById('search-budget').value) || Infinity;
-
   if (allResidences.length === 0) return;
 
-  const filtered = allResidences.filter(r => {
-    return (!commune || r.commune === commune) &&
-           (!type || r.type === type) &&
-           (r.prix_nuit <= budget);
-  });
+  const filtered = allResidences.filter(r =>
+    (!commune || r.commune === commune) && (!type || r.type === type) && (r.prix_nuit <= budget)
+  );
 
   const grid = document.getElementById('listings-grid');
   if (filtered.length === 0) {
-    grid.innerHTML = `<div class="empty-state"><h3>Aucune R trouvée 😕</h3><p>Essaie d'élargir ta recherche.</p></div>`;
+    grid.innerHTML = '<div class="empty-state"><h3>Aucune R trouvée 😕</h3><p>Essaie d'élargir ta recherche.</p></div>';
   } else {
     grid.innerHTML = filtered.map((r, i) => renderCard(r, i)).join('');
   }
@@ -888,13 +892,20 @@ async function loadDashboard() {
     document.getElementById('proprio-section').style.display = 'block';
     document.getElementById('locataire-section').style.display = 'none';
 
-    const { data: annonces } = await sb.from('residences').select('*').eq('proprietaire_id', currentUser.id);
+    const { data: annonces } = await sb.from('residences').select('*').eq('proprietaire_id', currentUser.id).order('created_at', { ascending: false });
     document.getElementById('dash-annonces').textContent = (annonces || []).length;
     const grid = document.getElementById('mes-annonces');
     if (annonces && annonces.length > 0) {
-      grid.innerHTML = annonces.map((r, i) => renderCard(r, i)).join('');
+      grid.innerHTML = annonces.map((r, i) => {
+        const occupe = r.disponible === false;
+        const actions = '<div class="card-actions">' +
+          '<button class="btn-edit" onclick="editResidence(\'' + r.id + '\')">✏️ Modifier</button>' +
+          '<button class="btn-dispo" onclick="toggleDispo(\'' + r.id + '\', ' + occupe + ')">' + (occupe ? '🟢 Remettre dispo' : '🔴 Marquer occupé') + '</button>' +
+          '</div>';
+        return renderCard(r, i, actions);
+      }).join('');
     } else {
-      grid.innerHTML = `<div style="grid-column:1/-1;padding:32px;border:var(--border);text-align:center;font-family:var(--font);"><p>Tu n'as pas encore d'annonce.</p></div>`;
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:32px;border:var(--border);text-align:center;font-family:var(--font);"><p>Tu n'as pas encore d'annonce.</p></div>';
     }
   } else {
     document.getElementById('dash-role-label').textContent = 'Tableau de bord locataire';
@@ -907,13 +918,88 @@ async function loadDashboard() {
     const { count: favCount } = await sb.from('favoris').select('*', { count: 'exact', head: true }).eq('utilisateur_id', currentUser.id);
     document.getElementById('dash-reservations').textContent = resaCount || 0;
     document.getElementById('dash-favoris').textContent = favCount || 0;
-  } catch (e) {
-    console.error('Erreur stats dashboard :', e);
-  }
+  } catch (e) { console.error('Erreur stats dashboard :', e); }
 }
 
 // ══════════════════════════════════════
-// PUBLIER UNE RÉSIDENCE (ANTI-BLOCAGE ✅)
+// DISPONIBLE / OCCUPÉ
+// ══════════════════════════════════════
+async function toggleDispo(id, etaitOccupe) {
+  try {
+    const { error } = await sb.from('residences').update({ disponible: etaitOccupe ? true : false }).eq('id', id);
+    if (error) return showToast('Erreur : ' + error.message, 'error');
+    showToast(etaitOccupe ? 'Annonce remise en ligne 🟢' : 'Annonce marquée OCCUPÉ 🔴');
+    loadDashboard();
+  } catch (e) { showToast(msgErreur(e), 'error'); }
+}
+
+// ══════════════════════════════════════
+// ÉDITION D'UNE ANNONCE
+// ══════════════════════════════════════
+async function editResidence(id) {
+  try {
+    const { data, error } = await sb.from('residences').select('*').eq('id', id).single();
+    if (error || !data) return showToast('Impossible de charger l'annonce', 'error');
+
+    editingId = id;
+    existingPhotos = [...(data.photos || [])];
+    selectedFiles = [];
+
+    document.getElementById('pub-titre').value = data.titre || '';
+    document.getElementById('pub-commune').value = data.commune || '';
+    document.getElementById('pub-quartier').value = data.quartier || '';
+    document.getElementById('pub-type').value = data.type || '';
+    document.getElementById('pub-prix').value = data.prix_nuit || '';
+    document.getElementById('pub-chambres').value = data.chambres || '';
+    document.getElementById('pub-capacite').value = data.capacite || '';
+    document.getElementById('pub-description').value = data.description || '';
+    document.getElementById('pub-equipements').value = (data.equipements || []).join(', ');
+
+    renderExistingPhotos();
+    renderPreviews();
+
+    document.getElementById('publish-title').textContent = 'MODIFIER MA R';
+    document.getElementById('publish-sub').textContent = 'Modifie les informations puis enregistre. ✔';
+    document.getElementById('publish-btn').textContent = 'ENREGISTRER LES MODIFICATIONS ✔';
+    hideAlert('publish-alert');
+    showPage('publish');
+  } catch (e) { showToast(msgErreur(e), 'error'); }
+}
+
+function startPublish() {
+  editingId = null;
+  existingPhotos = [];
+  selectedFiles = [];
+  ['pub-titre','pub-quartier','pub-prix','pub-chambres','pub-capacite','pub-description','pub-equipements'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pub-commune').value = '';
+  document.getElementById('pub-type').value = '';
+  renderExistingPhotos();
+  renderPreviews();
+  document.getElementById('publish-title').textContent = 'PUBLIER MA R';
+  document.getElementById('publish-sub').textContent = 'Remplis les informations de ta résidence. Elle sera visible après validation.';
+  document.getElementById('publish-btn').textContent = 'PUBLIER MON ANNONCE →';
+  hideAlert('publish-alert');
+  showPage('publish');
+}
+
+function renderExistingPhotos() {
+  const wrap = document.getElementById('existing-photos');
+  const label = document.getElementById('existing-count');
+  if (existingPhotos.length === 0) {
+    wrap.style.display = 'none'; label.style.display = 'none';
+    wrap.innerHTML = '';
+    return;
+  }
+  wrap.style.display = 'grid'; label.style.display = 'block';
+  wrap.innerHTML = existingPhotos.map((url, i) =>
+    '<div class="photo-thumb"><img src="' + optUrl(url, 400) + '" alt="Photo"/>' +
+    '<button class="photo-thumb-remove" onclick="removeExistingPhoto(' + i + ')">✕</button></div>'
+  ).join('');
+}
+function removeExistingPhoto(i) { existingPhotos.splice(i, 1); renderExistingPhotos(); }
+
+// ══════════════════════════════════════
+// PUBLIER / ENREGISTRER
 // ══════════════════════════════════════
 async function publierResidence() {
   if (!currentUser) return openModal('login');
@@ -934,131 +1020,101 @@ async function publierResidence() {
   }
 
   const btn = document.getElementById('publish-btn');
-  btn.disabled = true; btn.textContent = 'PUBLICATION EN COURS...';
+  btn.disabled = true; btn.textContent = 'ENVOI EN COURS...';
 
   try {
-    let photoUrls = [];
+    // Upload des NOUVELLES photos via Cloudinary
+    let newUrls = [];
     if (selectedFiles.length > 0) {
-      showAlert('publish-alert', `📸 Upload de ${selectedFiles.length} photo(s) en cours...`, 'success');
+      showAlert('publish-alert', '📸 Upload de ' + selectedFiles.length + ' photo(s) via Cloudinary ⚡ ...', 'success');
       const progress = document.getElementById('upload-progress');
       const bar = document.getElementById('upload-progress-bar');
       progress.classList.add('show');
 
       for (let i = 0; i < selectedFiles.length; i++) {
-        const file = selectedFiles[i];
-        const ext = file.name.split('.').pop();
-        const fileName = `${currentUser.id}/${Date.now()}_${i}.${ext}`;
-
-        const { error: uploadError } = await sb.storage
-          .from('residences-photos')
-          .upload(fileName, file, { contentType: file.type, upsert: false });
-
-        if (!uploadError) {
-          const { data: urlData } = sb.storage.from('residences-photos').getPublicUrl(fileName);
-          photoUrls.push(urlData.publicUrl);
-        } else {
-          showToast('Photo ' + (i + 1) + ' non envoyée : ' + uploadError.message, 'error');
-        }
-
+        const url = await uploadPhoto(selectedFiles[i], i);
+        if (url) newUrls.push(url);
+        else showToast('Photo ' + (i + 1) + ' non envoyée', 'error');
         bar.style.width = ((i + 1) / selectedFiles.length * 100) + '%';
       }
       progress.classList.remove('show');
     }
 
-    const { error } = await sb.from('residences').insert({
-      proprietaire_id: currentUser.id,
-      titre, commune, quartier, type,
-      prix_nuit: prix, chambres, capacite, description,
-      equipements, photos: photoUrls,
-      disponible: true
-    });
+    const finalPhotos = [...existingPhotos, ...newUrls];
+    const payload = { titre, commune, quartier, type, prix_nuit: prix, chambres, capacite, description, equipements, photos: finalPhotos };
+
+    let error = null;
+    if (editingId) {
+      const res = await sb.from('residences').update(payload).eq('id', editingId);
+      error = res.error;
+    } else {
+      const res = await sb.from('residences').insert({ ...payload, proprietaire_id: currentUser.id, disponible: true });
+      error = res.error;
+    }
 
     if (error) {
       showAlert('publish-alert', 'Erreur : ' + error.message, 'error');
     } else {
+      const mode = editingId ? 'modifiée' : 'publiée';
       selectedFiles = [];
+      existingPhotos = [];
+      editingId = null;
       document.getElementById('photos-preview').innerHTML = '';
       document.getElementById('photo-count').textContent = '0 / 8 photos';
-      showAlert('publish-alert', '🎉 Résidence publiée avec succès !', 'success');
-      showToast('Annonce publiée avec ' + photoUrls.length + ' photo(s) !');
-      setTimeout(() => showPage('dashboard'), 2000);
+      showAlert('publish-alert', '🎉 Annonce ' + mode + ' avec succès !', 'success');
+      showToast('Annonce ' + mode + ' !');
+      setTimeout(() => showPage('dashboard'), 1500);
     }
   } catch (e) {
     showAlert('publish-alert', msgErreur(e), 'error');
   } finally {
-    btn.disabled = false; btn.textContent = 'PUBLIER MON ANNONCE →';
+    btn.disabled = false;
+    btn.textContent = editingId ? 'ENREGISTRER LES MODIFICATIONS ✔' : 'PUBLIER MON ANNONCE →';
     document.getElementById('upload-progress').classList.remove('show');
   }
 }
 
 // ══════════════════════════════════════
-// PHOTO UPLOAD
+// PHOTO UPLOAD (sélection locale)
 // ══════════════════════════════════════
-let selectedFiles = [];
-
-function handlePhotoSelect(event) {
-  const files = Array.from(event.target.files);
-  addPhotos(files);
-}
-
 function addPhotos(files) {
-  const remaining = 8 - selectedFiles.length;
+  const remaining = 8 - (selectedFiles.length + existingPhotos.length);
   const toAdd = files.slice(0, remaining);
 
   toAdd.forEach(file => {
-    if (file.size > 5 * 1024 * 1024) {
-      showToast(`${file.name} dépasse 5MB — ignoré`, 'error');
-      return;
-    }
+    if (file.size > 5 * 1024 * 1024) { showToast(file.name + ' dépasse 5MB — ignoré', 'error'); return; }
     if (!file.type.startsWith('image/')) return;
     selectedFiles.push(file);
   });
-
   renderPreviews();
 }
 
 function renderPreviews() {
   const preview = document.getElementById('photos-preview');
   const count = document.getElementById('photo-count');
-  count.textContent = `${selectedFiles.length} / 8 photos`;
-
+  count.textContent = selectedFiles.length + ' / 8 nouvelles photos';
   preview.innerHTML = selectedFiles.map((file, i) => {
     const url = URL.createObjectURL(file);
-    return `<div class="photo-thumb">
-      <img src="${url}" alt="Photo ${i+1}"/>
-      <button class="photo-thumb-remove" onclick="removePhoto(${i})">✕</button>
-    </div>`;
+    return '<div class="photo-thumb"><img src="' + url + '" alt="Photo ' + (i+1) + '"/>' +
+      '<button class="photo-thumb-remove" onclick="removePhoto(' + i + ')">✕</button></div>';
   }).join('');
 
   const zone = document.getElementById('upload-zone');
   zone.querySelector('.upload-zone-text').textContent =
-    selectedFiles.length >= 8 ? 'Maximum atteint (8/8)' : 'Clique ou glisse tes photos ici';
+    (selectedFiles.length + existingPhotos.length) >= 8 ? 'Maximum atteint (8/8)' : 'Clique ou glisse tes photos ici';
 }
 
-function removePhoto(index) {
-  selectedFiles.splice(index, 1);
-  renderPreviews();
-}
+function removePhoto(index) { selectedFiles.splice(index, 1); renderPreviews(); }
 
-// Drag & drop
 function initDragDrop() {
   const zone = document.getElementById('upload-zone');
   if (!zone) return;
-
-  zone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    zone.style.background = 'var(--gray2)';
-  });
-  zone.addEventListener('dragleave', () => {
-    zone.style.background = '';
-  });
+  zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.style.background = 'var(--gray2)'; });
+  zone.addEventListener('dragleave', () => { zone.style.background = ''; });
   zone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    zone.style.background = '';
-    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-    addPhotos(files);
+    e.preventDefault(); zone.style.background = '';
+    addPhotos(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
   });
-
   document.getElementById('photo-input').addEventListener('change', (e) => {
     addPhotos(Array.from(e.target.files));
     e.target.value = '';
@@ -1070,27 +1126,19 @@ function initDragDrop() {
 // ══════════════════════════════════════
 async function init() {
   loadResidences();
-
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) overlay.classList.remove('open');
-    });
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
   });
-
   initDragDrop();
-
   sb.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-      if (session?.user) {
-        setTimeout(() => loadUser(session.user), 0);
-      }
+      if (session?.user) setTimeout(() => loadUser(session.user), 0);
     } else if (event === 'SIGNED_OUT') {
       currentUser = null; currentProfile = null;
       updateNavUI(false);
     }
   });
 }
-
 init();
 </script>
 </body>
