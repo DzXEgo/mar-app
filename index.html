@@ -89,7 +89,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .marquee-track span { font-family: var(--font-disp); font-size: 20px; letter-spacing: 1px; color: var(--white); }
 .marquee-track .dot { color: var(--orange); }
 
-/* ── SEARCH ── */
+/* ── SEARCH ─ */
 .search-section { padding: 32px 5vw; background: var(--gray); border-bottom: var(--border); }
 .search-wrap { max-width: 900px; margin: 0 auto; display: flex; align-items: stretch; border: var(--border); box-shadow: var(--shadow-lg); background: var(--white); }
 .search-field { flex: 1; display: flex; flex-direction: column; padding: 14px 18px; border-right: var(--border); cursor: pointer; transition: background 0.15s; }
@@ -319,7 +319,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
         <button class="btn-secondary" onclick="openModal('signup')">Je publie mon annonce</button>
       </div>
       <div class="hero-trust">
-        <div class="trust-avatars"><span>👩🏾</span><span>👨🏿</span><span>👩🏽</span><span>👨🏾</span></div>
+        <div class="trust-avatars"><span>👩</span><span>🏿</span><span>👩</span><span>🏾</span></div>
         <span>+500 résidences vérifiées</span>
       </div>
     </div>
@@ -597,7 +597,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 // ══════════════════════════════════════
 // SUPABASE CONFIG (PARIS — Ultra rapide à Abidjan 🇨🇮)
 // ══════════════════════════════════════
-const SUPABASE_URL = 'https://zfcgxjbylbpdtlsukjkb.supabase.co';
+const SUPABASE_URL = 'https://zfcgxjbylbpdtlsukgjk.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmY2d4amJ5bGJwZHRsc3VrZ2prIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MTIyNDMsImV4cCI6MjEwMjE4ODI0M30.W14VLIWoWxTHWI3NfS_qHuaofLnBG_d5BbNjPwLn_3Q';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: {
