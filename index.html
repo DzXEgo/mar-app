@@ -33,6 +33,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .btn-nav:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--black) !important; }
 .nav-user { display: flex; align-items: center; gap: 10px; }
 .nav-user-name { font-family: var(--font); font-size: 13px; font-weight: 600; }
+.nav-avatar { width: 32px; height: 32px; border-radius: 99px; border: 2px solid var(--black); object-fit: cover; }
 .nav-badge { background: var(--red); color: #fff; border: 2px solid var(--black); font-size: 10px; font-weight: 800; padding: 1px 7px; margin-left: 6px; }
 .btn-logout { background: transparent; border: var(--border); font-family: var(--font); font-size: 12px; font-weight: 700; padding: 6px 14px; cursor: pointer; transition: background 0.15s; }
 .btn-logout:hover { background: var(--gray); }
@@ -125,6 +126,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .listing-type-badge { position: absolute; bottom: 10px; left: 10px; background: var(--black); color: var(--white); font-family: var(--font); font-size: 9px; font-weight: 800; padding: 3px 10px; text-transform: uppercase; }
 .badge-dispo { position: absolute; top: 10px; right: 10px; background: var(--green); color: #fff; border: 2px solid var(--black); font-family: var(--font); font-size: 9px; font-weight: 800; padding: 3px 10px; text-transform: uppercase; }
 .badge-occupe { position: absolute; top: 10px; right: 10px; background: var(--red); color: #fff; border: 2px solid var(--black); font-family: var(--font); font-size: 9px; font-weight: 800; padding: 3px 10px; text-transform: uppercase; }
+.badge-verifie { position: absolute; top: 10px; left: 10px; background: var(--cyan); color: var(--black); border: 2px solid var(--black); font-family: var(--font); font-size: 9px; font-weight: 800; padding: 3px 10px; text-transform: uppercase; }
 .listing-body { padding: 16px; }
 .listing-loc { font-family: var(--font); font-size: 10px; font-weight: 800; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.8px; }
 .listing-title { font-family: var(--font); font-size: 15px; font-weight: 700; margin: 6px 0 10px; }
@@ -173,6 +175,18 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .thread-input button { background: var(--orange); color: #fff; border: var(--border); box-shadow: var(--shadow); font-family: var(--font); font-weight: 800; padding: 0 18px; cursor: pointer; }
 .thread-placeholder { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--ink-mute); font-family: var(--font); }
 .msg-empty { padding: 24px; text-align: center; color: var(--ink-mute); font-size: 13px; }
+
+/* ── PROFIL / KYC ── */
+.id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px; }
+.id-card { border: var(--border); box-shadow: var(--shadow); padding: 20px; background: var(--white); }
+.id-label { font-family: var(--font); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-mute); margin-bottom: 12px; }
+.id-avatar, .id-avatar-placeholder { width: 84px; height: 84px; border-radius: 99px; border: var(--border); object-fit: cover; margin-bottom: 12px; }
+.id-avatar-placeholder { display: flex; align-items: center; justify-content: center; font-size: 36px; background: var(--gray); }
+.btn-upload-small { display: inline-flex; gap: 6px; align-items: center; background: var(--yellow); border: 2px solid var(--black); font-family: var(--font); font-size: 11px; font-weight: 800; padding: 8px 14px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s; }
+.btn-upload-small:hover { transform: translate(-2px,-2px); box-shadow: 3px 3px 0 var(--black); }
+.kyc-ok { background: #f0fdf4; border: 2px solid var(--green); color: #15803d; padding: 10px 14px; font-weight: 700; font-size: 13px; }
+.kyc-wait { background: #fffbeb; border: 2px solid var(--yellow); color: #92400e; padding: 10px 14px; font-weight: 700; font-size: 13px; }
+.kyc-none { background: var(--gray); border: 2px solid var(--gray2); color: var(--ink-soft); padding: 10px 14px; font-size: 13px; margin-bottom: 10px; }
 
 /* ── AUTH MODAL ── */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 300; display: none; align-items: center; justify-content: center; }
@@ -293,6 +307,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
   .msg-layout.thread-open .msg-thread { display: flex; }
   .thread-back { display: inline-block; }
 }
+@media (max-width: 760px) { .id-grid { grid-template-columns: 1fr; } }
 @media (max-width: 600px) {
   .listings-grid { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
@@ -305,7 +320,6 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 </head>
 <body>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <!-- NAV -->
@@ -328,6 +342,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
       <a onclick="openModal('signup')" class="btn-nav">S'inscrire</a>
     </div>
     <div id="nav-user" style="display:none;" class="nav-user">
+      <img id="nav-avatar" class="nav-avatar" style="display:none;" alt=""/>
       <span class="nav-user-name" id="nav-user-name"></span>
       <a onclick="showPage('messages')" class="hide-mob">💬 Messages<span class="nav-badge" id="msg-badge" style="display:none;">0</span></a>
       <a onclick="showPage('dashboard')" class="hide-mob">Mon espace</a>
@@ -348,13 +363,11 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
       </h1>
       <p class="hero-sub">Prix exacts, photos HD, GPS précis.<br/>Zéro arnaque — juste posé chez toi.<br/>Cocody, Plateau, Marcory et partout.</p>
       <div class="hero-actions">
-        <button class="btn-primary" onclick="document.getElementById('listings-anchor').scrollIntoView({behavior:'smooth'})">
-          🔍 Chercher une R
-        </button>
+        <button class="btn-primary" onclick="document.getElementById('listings-anchor').scrollIntoView({behavior:'smooth'})">🔍 Chercher une R</button>
         <button class="btn-secondary" onclick="openModal('signup')">Je publie mon annonce</button>
       </div>
       <div class="hero-trust">
-        <div class="trust-avatars"><span>👩</span><span>🏿</span><span>👩🏽</span><span>👨🏾</span></div>
+        <div class="trust-avatars"><span>👩</span><span>🏿</span><span>👩</span><span>🏾</span></div>
         <span>+500 résidences vérifiées</span>
       </div>
     </div>
@@ -468,6 +481,23 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
       <div class="dash-card"><div class="dash-card-num" id="dash-favoris">0</div><div class="dash-card-label">Favoris sauvegardés</div></div>
       <div class="dash-card"><div class="dash-card-num" id="dash-annonces">0</div><div class="dash-card-label">Mes annonces</div></div>
     </div>
+
+    <!-- ══ MON PROFIL (photo + KYC) ══ -->
+    <div class="dash-section-title">MON PROFIL</div>
+    <div class="id-grid">
+      <div class="id-card">
+        <div class="id-label">📷 Photo de profil</div>
+        <img id="profile-avatar" class="id-avatar" src="" style="display:none;" alt=""/>
+        <div id="avatar-placeholder" class="id-avatar-placeholder">👤</div>
+        <label class="btn-upload-small">Changer ma photo<input type="file" id="avatar-input" accept="image/*" style="display:none;"/></label>
+      </div>
+      <div class="id-card">
+        <div class="id-label">🪪 Vérification d'identité (KYC)</div>
+        <div id="kyc-status"></div>
+        <label id="kyc-label" class="btn-upload-small" style="display:none;">Envoyer CNI / permis / passeport<input type="file" id="kyc-input" accept="image/*" style="display:none;"/></label>
+      </div>
+    </div>
+
     <div id="proprio-section" style="display:none;">
       <div class="dash-section-title">MES ANNONCES</div>
       <button class="btn-add" onclick="startPublish()">+ Publier une nouvelle R</button>
@@ -638,7 +668,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 // ══════════════════════════════════════
 // VERSION
 // ══════════════════════════════════════
-console.log('%cMA R v5 — Messagerie temps réel', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
+console.log('%cMA R v6 — Sécurité + Photo profil + KYC', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
 
 // ══════════════════════════════════════
 // CONFIG
@@ -711,27 +741,30 @@ function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&l
 
 // ══════════════════════════════════════
 // CLOUDINARY ⚡
-// ═════════════════════════════════════
+// ══════════════════════════════════════
 function optUrl(url, w = 900) {
   if (!url) return url;
   if (url.includes('res.cloudinary.com')) return url.replace('/upload/', '/upload/q_auto,f_auto,w_' + w + '/');
   return url;
 }
 
+async function uploadCloudinary(file, folder) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', CLOUDINARY_PRESET);
+  fd.append('folder', folder);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 60000);
+  const res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/image/upload', { method: 'POST', body: fd, signal: controller.signal });
+  clearTimeout(timer);
+  if (!res.ok) throw new Error('upload');
+  const json = await res.json();
+  return json.secure_url;
+}
+
 async function uploadPhoto(file, i) {
   try {
-    const fd = new FormData();
-    fd.append('file', file);
-    fd.append('upload_preset', CLOUDINARY_PRESET);
-    fd.append('folder', 'mar');
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 60000);
-    const res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/image/upload', { method: 'POST', body: fd, signal: controller.signal });
-    clearTimeout(timer);
-    if (res.ok) {
-      const json = await res.json();
-      if (json.secure_url) return json.secure_url;
-    }
+    return await uploadCloudinary(file, 'mar');
   } catch (e) { console.warn('Cloudinary échec, bascule Supabase :', e); }
   try {
     const ext = file.name.split('.').pop();
@@ -808,12 +841,15 @@ async function logout() {
 async function loadUser(user) {
   try {
     currentUser = user;
-    const { data: profile, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
+    const { data: profile, error } = await sb.from('profiles')
+      .select('id, prenom, nom, role, avatar_url, kyc_verifie, kyc_statut, abonnement_actif, abonnement_fin')
+      .eq('id', user.id).single();
     if (!profile || error) {
-      const fallback = { id: user.id, prenom: user.email.split('@')[0], nom: '', role: 'locataire' };
+      const fallback = { id: user.id, prenom: user.email.split('@')[0], nom: '', role: 'locataire', avatar_url: null, kyc_verifie: false, kyc_statut: 'aucun' };
       await sb.from('profiles').upsert(fallback);
       currentProfile = fallback;
     } else currentProfile = profile;
+    profileCache[currentUser.id] = currentProfile;
     updateNavUI(true, currentProfile);
     loadResidences();
     loadMessages();
@@ -825,14 +861,77 @@ function updateNavUI(loggedIn, profile = null) {
   const guest = document.getElementById('nav-guest');
   const userEl = document.getElementById('nav-user');
   const nameEl = document.getElementById('nav-user-name');
+  const avEl = document.getElementById('nav-avatar');
   if (loggedIn) {
     guest.style.display = 'none';
     userEl.style.display = 'flex';
     nameEl.textContent = (profile && profile.prenom) ? profile.prenom : 'Mon espace';
+    if (profile && profile.avatar_url) { avEl.src = optUrl(profile.avatar_url, 100); avEl.style.display = 'block'; }
+    else avEl.style.display = 'none';
   } else {
     guest.style.display = 'flex';
     userEl.style.display = 'none';
+    avEl.style.display = 'none';
   }
+}
+
+// ══════════════════════════════════════
+// PROFIL : PHOTO + KYC
+// ══════════════════════════════════════
+function renderProfileSection() {
+  if (!currentProfile) return;
+  const av = document.getElementById('profile-avatar');
+  const ph = document.getElementById('avatar-placeholder');
+  if (currentProfile.avatar_url) { av.src = optUrl(currentProfile.avatar_url, 200); av.style.display = 'block'; ph.style.display = 'none'; }
+  else { av.style.display = 'none'; ph.style.display = 'flex'; }
+
+  const st = document.getElementById('kyc-status');
+  const label = document.getElementById('kyc-label');
+  const s = currentProfile.kyc_statut || 'aucun';
+  if (currentProfile.kyc_verifie || s === 'valide') {
+    st.innerHTML = '<div class="kyc-ok">✔ IDENTITÉ VÉRIFIÉE — badge public actif</div>';
+    label.style.display = 'none';
+  } else if (s === 'en_attente') {
+    st.innerHTML = '<div class="kyc-wait">⏳ Document reçu — vérification en cours (24-48h)</div>';
+    label.style.display = 'none';
+  } else {
+    st.innerHTML = "<div class='kyc-none'>Envoie une photo de ta CNI, ton permis ou ton passeport. Tu recevras le badge ✔ Vérifié après contrôle.</div>";
+    label.style.display = 'inline-flex';
+  }
+}
+
+function initProfileUploads() {
+  document.getElementById('avatar-input').addEventListener('change', async (e) => {
+    const file = e.target.files[0]; e.target.value = '';
+    if (!file || !currentUser) return;
+    if (file.size > 5 * 1024 * 1024) return showToast('Image trop lourde (5MB max)', 'error');
+    try {
+      showToast('Envoi de ta photo...', 'success');
+      const url = await uploadCloudinary(file, 'avatars');
+      const { error } = await sb.from('profiles').update({ avatar_url: url }).eq('id', currentUser.id);
+      if (error) return showToast('Erreur : ' + error.message, 'error');
+      currentProfile.avatar_url = url;
+      updateNavUI(true, currentProfile);
+      renderProfileSection();
+      showToast('Photo de profil mise à jour !');
+    } catch (err) { showToast(msgErreur(err), 'error'); }
+  });
+
+  document.getElementById('kyc-input').addEventListener('change', async (e) => {
+    const file = e.target.files[0]; e.target.value = '';
+    if (!file || !currentUser) return;
+    if (file.size > 5 * 1024 * 1024) return showToast('Document trop lourd (5MB max)', 'error');
+    try {
+      showToast('Envoi du document...', 'success');
+      const url = await uploadCloudinary(file, 'kyc');
+      const { error } = await sb.from('profiles').update({ kyc_doc_url: url }).eq('id', currentUser.id);
+      if (error) return showToast('Erreur : ' + error.message, 'error');
+      currentProfile.kyc_doc_url = url;
+      currentProfile.kyc_statut = 'en_attente';
+      renderProfileSection();
+      showToast('Document envoyé ! Vérification sous 24-48h.');
+    } catch (err) { showToast(msgErreur(err), 'error'); }
+  });
 }
 
 // ══════════════════════════════════════
@@ -846,17 +945,18 @@ function formatPrice(p) { return p ? p.toLocaleString('fr-FR') : '—'; }
 function renderCard(r, i, actionsHtml = '') {
   const color = COLORS[i % COLORS.length];
   const emoji = EMOJIS[r.type] || '🏠';
-  const tags = (r.equipements || []).slice(0, 3).map(e => '<span class="listing-tag">' + e + '</span>').join('');
+  const tags = (r.equipements || []).slice(0, 3).map(e => '<span class="listing-tag">' + escapeHtml(e) + '</span>').join('');
   const hasPhoto = r.photos && r.photos.length > 0;
   const dispoBadge = r.demo ? '' : (r.disponible === false
     ? '<span class="badge-occupe">Occupé</span>'
     : '<span class="badge-dispo">Disponible</span>');
+  const owner = profileCache[r.proprietaire_id];
+  const verifBadge = (!r.demo && owner && owner.kyc_verifie) ? '<span class="badge-verifie">✔ Vérifié</span>' : '';
 
   const imgHtml = hasPhoto
-    ? '<div class="listing-photos"><img src="' + optUrl(r.photos[0]) + '" alt="' + r.titre + '" loading="lazy"/>' + dispoBadge + '<div class="listing-type-badge">' + (r.type || 'Résidence') + '</div></div>'
-    : '<div class="listing-img ' + color + '">' + emoji + dispoBadge + '<div class="listing-type-badge">' + (r.type || 'Résidence') + '</div></div>';
+    ? '<div class="listing-photos"><img src="' + optUrl(r.photos[0]) + '" alt="' + escapeHtml(r.titre) + '" loading="lazy"/>' + dispoBadge + verifBadge + '<div class="listing-type-badge">' + escapeHtml(r.type || 'Résidence') + '</div></div>'
+    : '<div class="listing-img ' + color + '">' + emoji + dispoBadge + verifBadge + '<div class="listing-type-badge">' + escapeHtml(r.type || 'Résidence') + '</div></div>';
 
-  // Bouton contacter pour les visiteurs (annonces réelles, pas les miennes)
   let publicActions = actionsHtml;
   if (!publicActions && !r.demo && !(currentUser && r.proprietaire_id === currentUser.id)) {
     publicActions = '<div class="card-actions"><button class="btn-contact" onclick="contactOwner(\'' + r.id + '\')">💬 Contacter le propriétaire</button></div>';
@@ -864,8 +964,8 @@ function renderCard(r, i, actionsHtml = '') {
 
   return '<div class="listing-card">' + imgHtml +
     '<div class="listing-body">' +
-    '<div class="listing-loc">📍 ' + r.commune + ' · ' + r.quartier + '</div>' +
-    '<div class="listing-title">' + r.titre + '</div>' +
+    '<div class="listing-loc">📍 ' + escapeHtml(r.commune) + ' · ' + escapeHtml(r.quartier) + '</div>' +
+    '<div class="listing-title">' + escapeHtml(r.titre) + '</div>' +
     '<div class="listing-tags">' + (tags || '<span class="listing-tag">🛏 ' + (r.chambres || 1) + ' ch.</span>') + '</div>' +
     '<div class="listing-footer">' +
     '<div class="listing-price">' + formatPrice(r.prix_nuit) + ' <span>FCFA/nuit</span></div>' +
@@ -897,6 +997,14 @@ async function loadResidences() {
     }
 
     allResidences = data;
+
+    // Récupère le statut KYC des propriétaires pour les badges ✔
+    const ownerIds = [...new Set(data.map(r => r.proprietaire_id))];
+    if (ownerIds.length) {
+      const { data: profs } = await sb.from('profiles').select('id, prenom, nom, kyc_verifie, avatar_url').in('id', ownerIds);
+      (profs || []).forEach(p => { profileCache[p.id] = Object.assign(profileCache[p.id] || {}, p); });
+    }
+
     document.getElementById('stat-residences').innerHTML = data.length + '<span class="accent">+</span>';
     grid.innerHTML = data.map((r, i) => renderCard(r, i)).join('');
   } catch (e) {
@@ -947,8 +1055,8 @@ async function loadMessages() {
 
     const ids = [...new Set(allMessages.map(m => m.expediteur_id === currentUser.id ? m.destinataire_id : m.expediteur_id))];
     if (ids.length) {
-      const { data: profs } = await sb.from('profiles').select('id, prenom, nom').in('id', ids);
-      (profs || []).forEach(p => profileCache[p.id] = p);
+      const { data: profs } = await sb.from('profiles').select('id, prenom, nom, avatar_url').in('id', ids);
+      (profs || []).forEach(p => { profileCache[p.id] = Object.assign(profileCache[p.id] || {}, p); });
     }
     renderMsgList();
     updateBadge();
@@ -1081,7 +1189,6 @@ function updateBadge() {
   badge.textContent = n;
 }
 
-// ── TEMPS RÉEL ⚡ ──
 function startRealtime() {
   stopRealtime();
   if (!currentUser) return;
@@ -1090,7 +1197,9 @@ function startRealtime() {
       const m = payload.new;
       allMessages.push(m);
       if (!profileCache[m.expediteur_id]) {
-        sb.from('profiles').select('id, prenom, nom').eq('id', m.expediteur_id).single().then(({ data }) => { if (data) profileCache[data.id] = data; renderMsgList(); });
+        sb.from('profiles').select('id, prenom, nom, avatar_url').eq('id', m.expediteur_id).single().then(({ data }) => {
+          if (data) { profileCache[data.id] = Object.assign(profileCache[data.id] || {}, data); renderMsgList(); }
+        });
       }
       if (activeConvo && activeConvo.userId === m.expediteur_id) {
         appendBubble(m, false);
@@ -1113,6 +1222,7 @@ async function loadDashboard() {
   if (!currentProfile) return;
 
   document.getElementById('dash-prenom').textContent = currentProfile.prenom || 'toi';
+  renderProfileSection();
 
   if (currentProfile.role === 'proprietaire') {
     document.getElementById('dash-role-label').textContent = 'Tableau de bord propriétaire';
@@ -1343,6 +1453,7 @@ function initDragDrop() {
 // ══════════════════════════════════════
 async function init() {
   loadResidences();
+  initProfileUploads();
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
   });
