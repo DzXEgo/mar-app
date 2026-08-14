@@ -120,7 +120,6 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .empty-state p { color: var(--ink-soft); font-size: 15px; }
 .loading-grid { grid-column: 1/-1; display: flex; justify-content: center; padding: 60px; }
 .spinner { width: 40px; height: 40px; border: 4px solid var(--gray2); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; }
-/* ── FICHE LOGEMENT ── */
 .res-section { padding: 32px 5vw; max-width: 1100px; margin: 0 auto; }
 .back-link { font-family: var(--font); font-weight: 700; font-size: 12px; cursor: pointer; display: inline-block; margin-bottom: 16px; }
 .res-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 20px; margin-bottom: 24px; }
@@ -141,7 +140,6 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .avis-item { border: 2px solid var(--black); padding: 12px; margin-bottom: 10px; background: var(--gray); }
 .avis-item .a-head { font-family: var(--font); font-weight: 800; font-size: 12px; margin-bottom: 4px; }
 .avis-item p { font-size: 12px; color: var(--ink-soft); }
-/* ── RÉSERVATIONS ── */
 .resa-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
 .resa-card { border: var(--border); box-shadow: var(--shadow); padding: 16px; background: var(--white); }
 .resa-head { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
@@ -156,7 +154,6 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .ra-cancel { background: var(--white); } .ra-report { background: var(--yellow); } .ra-rate { background: var(--cyan); }
 .mode-check { display: flex; gap: 8px; align-items: center; font-size: 12px; margin-bottom: 8px; cursor: pointer; }
 .mode-check input { width: 16px; height: 16px; accent-color: var(--orange); }
-/* ── MESSAGES ── */
 .messages-section { padding: 32px 5vw; max-width: 1100px; margin: 0 auto; }
 .msg-title { font-family: var(--font-disp); font-size: 40px; letter-spacing: 1px; margin-bottom: 16px; }
 .msg-layout { display: grid; grid-template-columns: 320px 1fr; gap: 16px; height: calc(100vh - 220px); min-height: 420px; }
@@ -192,7 +189,6 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .stars-row { display: flex; gap: 6px; margin: 10px 0 16px; }
 .star-btn { font-size: 32px; background: none; border: none; cursor: pointer; color: var(--gray2); }
 .star-btn.on { color: var(--orange); }
-/* ── LÉGAL ── */
 .legal-section { padding: 48px 5vw; max-width: 860px; margin: 0 auto; }
 .legal-title { font-family: var(--font-disp); font-size: 48px; letter-spacing: 1px; }
 .legal-updated { font-size: 12px; color: var(--ink-mute); margin: 8px 0 28px; }
@@ -201,7 +197,6 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .legal-block h3 { font-family: var(--font); font-size: 14px; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
 .legal-block p, .legal-block li { font-size: 13px; line-height: 1.7; color: var(--ink-soft); margin-bottom: 6px; }
 .kyc-consent { font-size: 10px; color: var(--ink-mute); margin-top: 10px; line-height: 1.5; }
-/* ── PROFIL ── */
 .id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px; }
 .id-card { border: var(--border); box-shadow: var(--shadow); padding: 20px; background: var(--white); }
 .id-label { font-family: var(--font); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-mute); margin-bottom: 12px; }
@@ -211,7 +206,6 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .kyc-ok { background: #f0fdf4; border: 2px solid var(--green); color: #15803d; padding: 10px 14px; font-weight: 700; font-size: 13px; }
 .kyc-wait { background: #fffbeb; border: 2px solid var(--yellow); color: #92400e; padding: 10px 14px; font-weight: 700; font-size: 13px; }
 .kyc-none { background: var(--gray); border: 2px solid var(--gray2); color: var(--ink-soft); padding: 10px 14px; font-size: 13px; margin-bottom: 10px; }
-/* ── MODALS ── */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 300; display: none; align-items: center; justify-content: center; }
 .modal-overlay.open { display: flex; }
 .modal { background: var(--white); border: var(--border); box-shadow: var(--shadow-lg); width: 100%; max-width: 440px; padding: 40px; position: relative; animation: fadeUp 0.3s ease; max-height: 90vh; overflow-y: auto; }
@@ -240,7 +234,6 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .alert.error { border-color: var(--red); background: #fef2f2; color: #dc2626; }
 .alert.show { display: block; }
 .book-total { font-family: var(--font-disp); font-size: 24px; color: var(--orange); margin: 8px 0; }
-/* ── DASHBOARD ── */
 .dashboard-section { padding: 48px 5vw; max-width: 1200px; margin: 0 auto; }
 .dashboard-header { margin-bottom: 40px; }
 .dashboard-welcome { font-family: var(--font-disp); font-size: 48px; letter-spacing: 1px; margin-bottom: 8px; }
@@ -252,7 +245,6 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .dash-card-label { font-family: var(--font-body); font-size: 14px; color: var(--ink-soft); }
 .dash-section-title { font-family: var(--font-disp); font-size: 32px; letter-spacing: 1px; margin-bottom: 20px; }
 .btn-add { display: inline-flex; align-items: center; gap: 8px; background: var(--black); color: var(--white); font-family: var(--font); font-size: 13px; font-weight: 700; padding: 12px 24px; border: var(--border); box-shadow: var(--shadow); cursor: pointer; text-transform: uppercase; }
-/* ── PUBLISH ── */
 .publish-section { padding: 48px 5vw; max-width: 700px; margin: 0 auto; }
 .publish-title { font-family: var(--font-disp); font-size: 48px; letter-spacing: 1px; margin-bottom: 8px; }
 .publish-sub { font-family: var(--font-body); font-size: 15px; color: var(--ink-soft); margin-bottom: 36px; }
@@ -724,7 +716,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 </div>
 
 <script>
-console.log('%cMA R v9 — Réservations sans paiement en ligne', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
+console.log('%cMA R v9.1 — apostrophes corrigées', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
 
 const SUPABASE_URL = 'https://zfcgxjbylbpdtlsukgjk.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmY2d4amJ5bGJwZHRsc3VrZ2prIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MTIyNDMsImV4cCI6MjEwMjE4ODI0M30.W14VLIWoWxTHWI3NfS_qHuaofLnBG_d5BbNjPwLn_3Q';
@@ -811,7 +803,7 @@ async function uploadPhoto(file, i) {
   return null;
 }
 
-// ══ AUTH ══
+// ══ AUTH ═
 async function signup() {
   const prenom = document.getElementById('signup-prenom').value.trim();
   const nom = document.getElementById('signup-nom').value.trim();
@@ -886,7 +878,7 @@ function renderProfileSection() {
   const s = currentProfile.kyc_statut || 'aucun';
   if (currentProfile.kyc_verifie || s === 'valide') { st.innerHTML = '<div class="kyc-ok">✔ IDENTITÉ VÉRIFIÉE — badge public actif</div>'; label.style.display = 'none'; }
   else if (s === 'en_attente') { st.innerHTML = '<div class="kyc-wait">⏳ Document reçu — vérification en cours (24-48h)</div>'; label.style.display = 'none'; }
-  else { st.innerHTML = "<div class='kyc-none'>Envoie une photo de ta CNI, ton permis ou ton passeport. Badge ✔ Vérifié après contrôle.</div>"; label.style.display = 'inline-flex'; }
+  else { st.innerHTML = "<div class='kyc-none'>Envoie une photo de ta CNI, ton permis ou ton passeport. Tu recevras le badge ✔ Vérifié après contrôle.</div>"; label.style.display = 'inline-flex'; }
 }
 function initProfileUploads() {
   document.getElementById('avatar-input').addEventListener('change', async (e) => {
@@ -1033,7 +1025,6 @@ async function renderResidencePage() {
   document.getElementById('res-equip').innerHTML = (r.equipements || []).map(e => '<span class="listing-tag">' + escapeHtml(e) + '</span>').join('') || '—';
   document.getElementById('res-regles').innerHTML =
     (r.regles ? escapeHtml(r.regles) : 'Aucune règle précisée.') + '<br/>🕑 Check-in : ' + escapeHtml(r.heure_checkin || '14:00') + ' · Check-out : ' + escapeHtml(r.heure_checkout || '12:00');
-  // disponibilités
   const { data: resas } = await sb.from('reservations').select('date_debut,date_fin,statut').eq('residence_id', r.id).in('statut', ['en_attente','acceptee']);
   const { data: blocs } = await sb.from('blocages').select('date_debut,date_fin').eq('residence_id', r.id);
   allBlocages = blocs || [];
@@ -1041,7 +1032,6 @@ async function renderResidencePage() {
   document.getElementById('res-dispo').innerHTML = periods.length
     ? periods.map(p => '🔒 Du ' + fmtDate(p.date_debut) + ' au ' + fmtDate(p.date_fin)).join('<br/>')
     : '🟢 Aucune période bloquée actuellement.';
-  // avis
   const { data: avis } = await sb.from('avis').select('*').eq('residence_id', r.id).order('created_at', { ascending: false });
   const av = document.getElementById('res-avis');
   if (avis && avis.length) {
@@ -1084,21 +1074,19 @@ async function submitBooking() {
   const d = document.getElementById('book-debut').value, f = document.getElementById('book-fin').value;
   const nb = parseInt(document.getElementById('book-nb').value) || 2;
   const msg = document.getElementById('book-msg').value.trim();
-  if (!d || !f) return showAlert('booking-alert', 'Choisis tes dates d'arrivée et de départ.', 'error');
+  if (!d || !f) return showAlert('booking-alert', "Choisis tes dates d'arrivée et de départ.", 'error');
   const nights = Math.round((new Date(f) - new Date(d)) / 86400000);
-  if (nights <= 0) return showAlert('booking-alert', 'La date de départ doit être après l'arrivée.', 'error');
-  // conflits
+  if (nights <= 0) return showAlert('booking-alert', "La date de départ doit être après l'arrivée.", 'error');
   const { data: resas } = await sb.from('reservations').select('date_debut,date_fin,statut').eq('residence_id', r.id).in('statut', ['en_attente','acceptee']);
   const { data: blocs } = await sb.from('blocages').select('date_debut,date_fin').eq('residence_id', r.id);
   const busy = [...(resas || []), ...(blocs || [])];
-  if (busy.some(b => overlaps(d, f, b.date_debut, b.date_fin))) return showAlert('booking-alert', 'Ces dates sont déjà réservées ou bloquées. Choisis d'autres dates.', 'error');
+  if (busy.some(b => overlaps(d, f, b.date_debut, b.date_fin))) return showAlert('booking-alert', "Ces dates sont déjà réservées ou bloquées. Choisis d'autres dates.", 'error');
   const total = nights * r.prix_nuit;
   const { error } = await sb.from('reservations').insert({
     residence_id: r.id, locataire_id: currentUser.id, date_debut: d, date_fin: f,
     nb_voyageurs: nb, montant_total: total, prix_convenu: total, statut: 'en_attente', message: msg
   });
   if (error) return showAlert('booking-alert', 'Erreur : ' + error.message, 'error');
-  // trace dans la messagerie
   await sb.from('messages').insert({
     expediteur_id: currentUser.id, destinataire_id: r.proprietaire_id, residence_id: r.id,
     contenu: '📅 Demande de réservation envoyée : du ' + fmtDate(d) + ' au ' + fmtDate(f) + ' (' + nb + ' voyageur(s)). Total estimé : ' + total.toLocaleString('fr-FR') + ' FCFA.'
@@ -1357,7 +1345,6 @@ function stopRealtime() { if (msgChannel) { sb.removeChannel(msgChannel); msgCha
 // ══ NOTATION (vérifiée après séjour) ══
 async function openRating(type, targetId, residenceId) {
   if (!currentUser) { showToast('Connecte-toi pour noter', 'error'); return openModal('login'); }
-  // vérification séjour terminé
   if (type === 'residence') {
     const { data } = await sb.from('reservations').select('id').eq('residence_id', residenceId).eq('locataire_id', currentUser.id).eq('statut', 'terminee').limit(1);
     if (!data || !data.length) return showToast('Avis possible uniquement après un séjour terminé ✔', 'error');
