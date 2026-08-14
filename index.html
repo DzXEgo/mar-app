@@ -372,7 +372,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 <div class="page active" id="page-home">
   <section class="hero">
     <div class="hero-left">
-      <div class="hero-tag">🇨🇮 Abidjan · Côte d'Ivoire</div>
+      <div class="hero-tag">🇨 Abidjan · Côte d'Ivoire</div>
       <h1 class="hero-title">
         TROUVE<br/>
         <span class="line-orange">TA R</span><br/>
@@ -700,7 +700,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 // ══════════════════════════════════════
 // VERSION
 // ══════════════════════════════════════
-console.log('%cMA R v7 — Notes + badges dans la messagerie', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
+console.log('%cMA R v7.1 — version corrigée', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
 
 // ══════════════════════════════════════
 // CONFIG
@@ -783,7 +783,7 @@ function badgesHtml(p) {
 
 // ══════════════════════════════════════
 // CLOUDINARY ⚡
-// ══════════════════════════════════════
+// ═════════════════════════════════════
 function optUrl(url, w = 900) {
   if (!url) return url;
   if (url.includes('res.cloudinary.com')) return url.replace('/upload/', '/upload/q_auto,f_auto,w_' + w + '/');
@@ -1046,7 +1046,7 @@ async function loadTenantRating(id) {
       const avg = data.reduce((s, a) => s + a.note, 0) / data.length;
       el.textContent = '★ ' + avg.toFixed(1) + ' (' + data.length + ' avis locataire)';
     } else {
-      el.textContent = 'Nouveau membre — pas encore d'avis locataire';
+      el.textContent = "Nouveau membre — pas encore d'avis locataire";
     }
   } catch (e) { console.error(e); }
 }
