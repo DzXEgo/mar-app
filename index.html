@@ -147,6 +147,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .st { font-family: var(--font); font-size: 9px; font-weight: 800; padding: 3px 10px; border: 2px solid var(--black); text-transform: uppercase; }
 .st-en_attente { background: var(--yellow); } .st-acceptee { background: var(--green); color: #fff; }
 .st-refusee { background: var(--red); color: #fff; } .st-annulee { background: var(--gray2); } .st-terminee { background: var(--cyan); }
+.st-ouvert { background: var(--red); color: #fff; } .st-traite { background: var(--green); color: #fff; }
+.st-active { background: var(--green); color: #fff; } .st-masquee { background: var(--gray2); }
 .resa-info { font-size: 12px; color: var(--ink-soft); line-height: 1.7; }
 .resa-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 .resa-actions button { border: 2px solid var(--black); font-family: var(--font); font-size: 10px; font-weight: 800; padding: 7px 10px; cursor: pointer; text-transform: uppercase; }
@@ -154,6 +156,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .ra-cancel { background: var(--white); } .ra-report { background: var(--yellow); } .ra-rate { background: var(--cyan); }
 .mode-check { display: flex; gap: 8px; align-items: center; font-size: 12px; margin-bottom: 8px; cursor: pointer; }
 .mode-check input { width: 16px; height: 16px; accent-color: var(--orange); }
+.admin-section { padding: 32px 5vw; max-width: 1100px; margin: 0 auto; }
 .messages-section { padding: 32px 5vw; max-width: 1100px; margin: 0 auto; }
 .msg-title { font-family: var(--font-disp); font-size: 40px; letter-spacing: 1px; margin-bottom: 16px; }
 .msg-layout { display: grid; grid-template-columns: 320px 1fr; gap: 16px; height: calc(100vh - 220px); min-height: 420px; }
@@ -330,12 +333,13 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
       <span class="nav-user-name" id="nav-user-name"></span>
       <a onclick="showPage('messages')" class="hide-mob">💬 Messages<span class="nav-badge" id="msg-badge" style="display:none;">0</span></a>
       <a onclick="showPage('dashboard')" class="hide-mob">Mon espace</a>
+      <a onclick="showPage('admin')" id="nav-admin" class="hide-mob" style="display:none;">🛡️ Admin</a>
       <button class="btn-logout" onclick="logout()">Déconnexion</button>
     </div>
   </div>
 </nav>
 
-<!-- ══ HOME ═ -->
+<!-- ══ HOME  -->
 <div class="page active" id="page-home">
   <section class="hero">
     <div class="hero-left">
@@ -505,7 +509,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
         <div class="id-label">🪪 Vérification d'identité (KYC)</div>
         <div id="kyc-status"></div>
         <label id="kyc-label" class="btn-upload-small" style="display:none;">Envoyer CNI / permis / passeport<input type="file" id="kyc-input" accept="image/*" style="display:none;"/></label>
-        <div class="kyc-consent">En envoyant ton document, tu acceptes qu'il soit utilisé uniquement pour la vérification d'identité, conformément à la politique de confidentialité (loi n° 2013-450).</div>
+        <div class="kyc-consent">Ton document est chiffré, stocké dans un coffre privé Supabase, visible uniquement par toi et l'équipe MA R. Jamais public.</div>
       </div>
     </div>
 
@@ -549,6 +553,27 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
       <div class="dash-section-title">MES FAVORIS</div>
       <div id="mes-favoris" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"></div>
     </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN ══ -->
+<div class="page" id="page-admin">
+  <div class="admin-section">
+    <div class="legal-title">POSTE DE CONTRÔLE 🛡️</div>
+    <div class="legal-updated">Réservé à l'équipe MA R — toutes tes actions sont immédiates.</div>
+    <div class="dashboard-grid" id="admin-stats"></div>
+
+    <div class="dash-section-title">🪪 KYC EN ATTENTE</div>
+    <div id="admin-kyc" class="resa-list"></div>
+
+    <div class="dash-section-title">🏠 ANNONCES</div>
+    <div id="admin-annonces" class="resa-list"></div>
+
+    <div class="dash-section-title">🚨 SIGNALEMENTS</div>
+    <div id="admin-signalements" class="resa-list"></div>
+
+    <div class="dash-section-title">👥 COMPTES</div>
+    <div id="admin-comptes" class="resa-list"></div>
   </div>
 </div>
 
@@ -719,7 +744,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
       <p><strong>2. Paiements.</strong> Les paiements des séjours sont effectués directement entre le locataire et le propriétaire (espèces, Orange Money, MTN MoMo, Wave). MA R ne conserve aucun paiement et ne prend aucune commission sur les séjours. Seuls les abonnements Premium sont payés à MA R.</p>
       <p><strong>3. Réservations.</strong> Une demande de réservation (dates, voyageurs, message) est envoyée au propriétaire qui peut l'accepter ou la refuser. Une confirmation récapitulative (adresse, dates, prix convenu, coordonnées du propriétaire) est générée et conservée dans la messagerie comme preuve d'accord.</p>
       <p><strong>4. Annulation.</strong> Toute réservation peut être annulée depuis le tableau de bord tant que le séjour n'est pas terminé. En cas d'annulation, le remboursement éventuel de l'acompte se règle directement entre les deux parties, sauf en cas de signalement validé par MA R.</p>
-      <p><strong>5. Vérification d'identité (KYC).</strong> Afin de lutter contre la fraude, un document officiel (CNI, permis, passeport) peut être demandé pour obtenir le badge « Vérifié ». Document consulté uniquement par l'équipe MA R, jamais affiché publiquement.</p>
+      <p><strong>5. Vérification d'identité (KYC).</strong> Afin de lutter contre la fraude, un document officiel (CNI, permis, passeport) peut être demandé pour obtenir le badge « Vérifié ». Le document est stocké dans un coffre privé, consulté uniquement par l'équipe MA R, jamais affiché publiquement.</p>
       <p><strong>6. Annonces.</strong> Le propriétaire garantit photos réelles, prix exacts, disponibilité à jour. Sont interdits : annonces mensongères, arnaques, discriminations. MA R peut suspendre toute annonce ou compte non conforme sans préavis.</p>
       <p><strong>7. Avis.</strong> Les avis ne sont possibles qu'après un séjour marqué « terminé ». Ils doivent refléter une expérience réelle et rester courtois.</p>
       <p><strong>8. Signalements.</strong> Tout utilisateur peut signaler une arnaque ou un logement non conforme. MA R examine chaque signalement et peut retirer l'annonce, suspendre le compte, et le cas échéant signaler aux autorités.</p>
@@ -732,7 +757,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
       <p><strong>Données collectées :</strong> identité, contact (email, téléphone), document KYC si transmis, annonces, photos, messages, avis, réservations.</p>
       <p><strong>Finalités :</strong> comptes, lutte anti-fraude, mise en relation, preuves d'accord, obligations légales.</p>
       <p><strong>Destinataires :</strong> équipe MA R uniquement. Aucune vente de données.</p>
-      <p><strong>Hébergement :</strong> Supabase (Paris), Cloudinary, Vercel.</p>
+      <p><strong>Hébergement :</strong> Supabase (Paris, coffre KYC privé), Cloudinary (photos publiques), Vercel.</p>
       <p><strong>Tes droits :</strong> accès, rectification, suppression via contact.mar.abidjan@gmail.com.</p>
     </div>
     <div class="legal-block" id="legal-mentions">
@@ -744,7 +769,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 </div>
 
 <script>
-console.log('%cMA R v9.2 — mot de passe oublié + téléphone', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
+console.log('%cMA R v10 — poste de contrôle + coffre KYC privé', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
 
 const SUPABASE_URL = 'https://zfcgxjbylbpdtlsukgjk.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmY2d4amJ5bGJwZHRsc3VrZ2prIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MTIyNDMsImV4cCI6MjEwMjE4ODI0M30.W14VLIWoWxTHWI3NfS_qHuaofLnBG_d5BbNjPwLn_3Q';
@@ -770,13 +795,18 @@ let allMessages = [], activeConvo = null, profileCache = {}, msgChannel = null;
 let ratingContext = null, ratingNote = 0;
 let currentResidence = null, myReservations = [], allBlocages = [];
 
+function isAdmin() { return !!(currentProfile && currentProfile.role === 'admin'); }
+function isProprio() { return !!(currentProfile && (currentProfile.role === 'proprietaire' || currentProfile.role === 'admin')); }
+
 function showPage(name) {
   if (name === 'messages' && !currentUser) { openModal('login'); return; }
+  if (name === 'admin' && !isAdmin()) { showPage('home'); return; }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   window.scrollTo(0, 0);
   if (name === 'dashboard') loadDashboard();
   if (name === 'messages') loadMessages();
+  if (name === 'admin') loadAdmin();
 }
 function openLegal(anchor) {
   showPage('legal'); closeModal('signup'); closeModal('login');
@@ -831,7 +861,7 @@ async function uploadPhoto(file, i) {
   return null;
 }
 
-// ══ AUTH + MOT DE PASSE OUBLIÉ ══
+// ══ AUTH ═
 async function signup() {
   const prenom = document.getElementById('signup-prenom').value.trim();
   const nom = document.getElementById('signup-nom').value.trim();
@@ -898,14 +928,20 @@ async function logout() {
 }
 async function loadUser(user) {
   try {
-    currentUser = user;
     const { data: profile, error } = await sb.from('profiles')
-      .select('id, prenom, nom, role, avatar_url, kyc_verifie, kyc_statut, abonnement_actif, abonnement_fin, modes_paiement, whatsapp, telephone')
+      .select('id, prenom, nom, role, avatar_url, kyc_verifie, kyc_statut, abonnement_actif, abonnement_fin, modes_paiement, whatsapp, telephone, suspendu')
       .eq('id', user.id).single();
+    let prof = profile;
     if (!profile || error) {
-      const fb = { id: user.id, prenom: user.email.split('@')[0], nom: '', role: 'locataire', avatar_url: null, kyc_verifie: false, kyc_statut: 'aucun', abonnement_actif: false, modes_paiement: [], whatsapp: null, telephone: null };
-      await sb.from('profiles').upsert(fb); currentProfile = fb;
-    } else currentProfile = profile;
+      const fb = { id: user.id, prenom: user.email.split('@')[0], nom: '', role: 'locataire', avatar_url: null, kyc_verifie: false, kyc_statut: 'aucun', abonnement_actif: false, modes_paiement: [], whatsapp: null, telephone: null, suspendu: false };
+      await sb.from('profiles').upsert(fb); prof = fb;
+    }
+    if (prof.suspendu) {
+      await sb.auth.signOut();
+      showToast('Compte suspendu. Contacte le support.', 'error');
+      return;
+    }
+    currentUser = user; currentProfile = prof;
     profileCache[currentUser.id] = currentProfile;
     updateNavUI(true, currentProfile);
     loadResidences(); loadMessages(); startRealtime();
@@ -914,11 +950,13 @@ async function loadUser(user) {
 function updateNavUI(loggedIn, profile = null) {
   const guest = document.getElementById('nav-guest'), userEl = document.getElementById('nav-user');
   const nameEl = document.getElementById('nav-user-name'), avEl = document.getElementById('nav-avatar');
+  const adminEl = document.getElementById('nav-admin');
   if (loggedIn) {
     guest.style.display = 'none'; userEl.style.display = 'flex';
     nameEl.textContent = (profile && profile.prenom) ? profile.prenom : 'Mon espace';
     if (profile && profile.avatar_url) { avEl.src = optUrl(profile.avatar_url, 100); avEl.style.display = 'block'; } else avEl.style.display = 'none';
-  } else { guest.style.display = 'flex'; userEl.style.display = 'none'; avEl.style.display = 'none'; }
+    adminEl.style.display = (profile && profile.role === 'admin') ? 'inline' : 'none';
+  } else { guest.style.display = 'flex'; userEl.style.display = 'none'; avEl.style.display = 'none'; adminEl.style.display = 'none'; }
 }
 
 // ══ PROFIL ══
@@ -932,6 +970,7 @@ function renderProfileSection() {
   const s = currentProfile.kyc_statut || 'aucun';
   if (currentProfile.kyc_verifie || s === 'valide') { st.innerHTML = '<div class="kyc-ok">✔ IDENTITÉ VÉRIFIÉE — badge public actif</div>'; label.style.display = 'none'; }
   else if (s === 'en_attente') { st.innerHTML = '<div class="kyc-wait">⏳ Document reçu — vérification en cours (24-48h)</div>'; label.style.display = 'none'; }
+  else if (s === 'refuse') { st.innerHTML = '<div class="kyc-wait">❌ Document refusé. Renvoie un document valide et lisible.</div>'; label.style.display = 'inline-flex'; }
   else { st.innerHTML = "<div class='kyc-none'>Envoie une photo de ta CNI, ton permis ou ton passeport. Tu recevras le badge ✔ Vérifié après contrôle.</div>"; label.style.display = 'inline-flex'; }
 }
 function savePhone() {
@@ -956,24 +995,28 @@ function initProfileUploads() {
       showToast('Photo de profil mise à jour !');
     } catch (err) { showToast(msgErreur(err), 'error'); }
   });
+  // KYC → COFFRE PRIVÉ Supabase (plus Cloudinary)
   document.getElementById('kyc-input').addEventListener('change', async (e) => {
     const f = e.target.files[0]; e.target.value = '';
     if (!f || !currentUser) return;
     if (f.size > 5*1024*1024) return showToast('Document trop lourd (5MB max)', 'error');
     try {
-      const url = await uploadCloudinary(f, 'kyc');
-      const { error } = await sb.from('profiles').update({ kyc_doc_url: url }).eq('id', currentUser.id);
+      showToast('Envoi sécurisé du document...', 'success');
+      const ext = f.name.split('.').pop();
+      const path = currentUser.id + '/kyc-' + Date.now() + '.' + ext;
+      const { error: upErr } = await sb.storage.from('kyc-docs').upload(path, f, { contentType: f.type });
+      if (upErr) return showToast('Erreur upload : ' + upErr.message, 'error');
+      const { error } = await sb.from('profiles').update({ kyc_doc_url: path }).eq('id', currentUser.id);
       if (error) return showToast('Erreur : ' + error.message, 'error');
       currentProfile.kyc_statut = 'en_attente'; renderProfileSection();
-      showToast('Document envoyé ! Vérification sous 24-48h.');
+      showToast('Document envoyé dans le coffre ! Vérification sous 24-48h.');
     } catch (err) { showToast(msgErreur(err), 'error'); }
   });
 }
 function saveModesPaiement() {
   const modes = [];
   ['mode-especes','mode-orange','mode-mtn','mode-wave'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el.checked) modes.push(el.value);
+    if (document.getElementById(id).checked) modes.push(document.getElementById(id).value);
   });
   sb.from('profiles').update({ modes_paiement: modes }).eq('id', currentUser.id).then(({ error }) => {
     if (error) return showToast('Erreur : ' + error.message, 'error');
@@ -988,6 +1031,97 @@ function renderModesForm() {
   document.getElementById('mode-orange').checked = m.includes('Orange Money');
   document.getElementById('mode-mtn').checked = m.includes('MTN MoMo');
   document.getElementById('mode-wave').checked = m.includes('Wave');
+}
+
+// ══ ADMIN 🛡️ ══
+function statCard(n, label) { return '<div class="dash-card"><div class="dash-card-num">' + n + '</div><div class="dash-card-label">' + label + '</div></div>'; }
+
+async function viewKyc(path) {
+  if (!path) return showToast('Aucun document envoyé', 'error');
+  if (path.startsWith('http')) { window.open(path, '_blank'); return; }
+  const { data, error } = await sb.storage.from('kyc-docs').createSignedUrl(path, 3600);
+  if (error) return showToast('Erreur : ' + error.message, 'error');
+  window.open(data.signedUrl, '_blank');
+  showToast('Lien temporaire valable 1 heure 🔒');
+}
+async function kycDecision(id, ok) {
+  const { error } = await sb.from('profiles').update(ok ? { kyc_verifie: true, kyc_statut: 'valide' } : { kyc_verifie: false, kyc_statut: 'refuse' }).eq('id', id);
+  if (error) return showToast('Erreur : ' + error.message, 'error');
+  showToast(ok ? 'Propriétaire vérifié ✔' : 'KYC refusé');
+  loadAdmin();
+}
+async function setAnnonceStatut(id, statut) {
+  const { error } = await sb.from('residences').update({ statut_annonce: statut }).eq('id', id);
+  if (error) return showToast('Erreur : ' + error.message, 'error');
+  showToast('Annonce : ' + statut);
+  loadAdmin(); loadResidences();
+}
+async function setSigStatut(id) {
+  const { error } = await sb.from('signalements').update({ statut: 'traite' }).eq('id', id);
+  if (error) return showToast('Erreur : ' + error.message, 'error');
+  showToast('Signalement marqué traité');
+  loadAdmin();
+}
+async function setSuspendu(id, val) {
+  const { error } = await sb.from('profiles').update({ suspendu: val }).eq('id', id);
+  if (error) return showToast('Erreur : ' + error.message, 'error');
+  showToast(val ? 'Compte suspendu ⛔' : 'Compte réactivé ✔');
+  loadAdmin();
+}
+
+async function loadAdmin() {
+  if (!isAdmin()) return;
+  try {
+    const [cUsers, cVerif, cAnn, cResa, cSig, cKyc] = await Promise.all([
+      sb.from('profiles').select('*', { count: 'exact', head: true }),
+      sb.from('profiles').select('*', { count: 'exact', head: true }).eq('kyc_verifie', true),
+      sb.from('residences').select('*', { count: 'exact', head: true }).eq('statut_annonce', 'active'),
+      sb.from('reservations').select('*', { count: 'exact', head: true }),
+      sb.from('signalements').select('*', { count: 'exact', head: true }).eq('statut', 'ouvert'),
+      sb.from('profiles').select('*', { count: 'exact', head: true }).eq('kyc_statut', 'en_attente'),
+    ]);
+    document.getElementById('admin-stats').innerHTML =
+      statCard(cUsers.count || 0, 'Utilisateurs') + statCard(cVerif.count || 0, 'Vérifiés ✔') +
+      statCard(cAnn.count || 0, 'Annonces actives') + statCard(cResa.count || 0, 'Réservations') +
+      statCard(cKyc.count || 0, 'KYC en attente') + statCard(cSig.count || 0, 'Signalements ouverts');
+
+    const { data: kycs } = await sb.from('profiles').select('*').eq('kyc_statut', 'en_attente');
+    document.getElementById('admin-kyc').innerHTML = (kycs && kycs.length) ? kycs.map(p =>
+      '<div class="resa-card"><div class="resa-head"><div class="resa-title">' + escapeHtml((p.prenom || '') + ' ' + (p.nom || '')) + '</div><span class="st st-en_attente">En attente</span></div>' +
+      '<div class="resa-info"> ' + escapeHtml(p.role) + ' · 📞 ' + escapeHtml(p.telephone || '—') + '</div>' +
+      '<div class="resa-actions"><button class="ra-rate" onclick="viewKyc(\'' + (p.kyc_doc_url || '') + '\')">👁 Voir document</button>' +
+      '<button class="ra-accept" onclick="kycDecision(\'' + p.id + '\', true)">✔ Valider</button>' +
+      '<button class="ra-refuse" onclick="kycDecision(\'' + p.id + '\', false)">✕ Refuser</button></div></div>'
+    ).join('') : "<div class='msg-empty'>Aucun KYC en attente. 🎉</div>";
+
+    const { data: anns } = await sb.from('residences').select('*').order('created_at', { ascending: false });
+    document.getElementById('admin-annonces').innerHTML = (anns && anns.length) ? anns.map(r => {
+      const o = profileCache[r.proprietaire_id] || {};
+      let btns = '';
+      if (r.statut_annonce === 'active') btns += '<button class="ra-report" onclick="setAnnonceStatut(\'' + r.id + '\', \'masquee\')">🙈 Masquer</button><button class="ra-refuse" onclick="setAnnonceStatut(\'' + r.id + '\', \'refusee\')">⛔ Refuser</button>';
+      else btns += '<button class="ra-accept" onclick="setAnnonceStatut(\'' + r.id + '\', \'active\')">🟢 Réactiver</button>';
+      return '<div class="resa-card"><div class="resa-head"><div class="resa-title">' + escapeHtml(r.titre) + '</div><span class="st st-' + r.statut_annonce + '">' + r.statut_annonce + '</span></div>' +
+        '<div class="resa-info">👤 ' + escapeHtml(o.prenom || '?') + ' · 📍 ' + escapeHtml(r.commune) + ' · ' + (r.prix_nuit || 0).toLocaleString('fr-FR') + ' F/nuit</div>' +
+        '<div class="resa-actions">' + btns + '</div></div>';
+    }).join('') : "<div class='msg-empty'>Aucune annonce.</div>";
+
+    const { data: sigs } = await sb.from('signalements').select('*').order('created_at', { ascending: false });
+    document.getElementById('admin-signalements').innerHTML = (sigs && sigs.length) ? sigs.map(s =>
+      '<div class="resa-card"><div class="resa-head"><div class="resa-title">' + escapeHtml(s.motif) + '</div><span class="st st-' + s.statut + '">' + s.statut + '</span></div>' +
+      '<div class="resa-info">' + escapeHtml(s.description || '') + '</div>' +
+      (s.statut === 'ouvert' ? '<div class="resa-actions"><button class="ra-accept" onclick="setSigStatut(\'' + s.id + '\')">✔ Marquer traité</button></div>' : '') + '</div>'
+    ).join('') : "<div class='msg-empty'>Aucun signalement. 🎉</div>";
+
+    const { data: users } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
+    document.getElementById('admin-comptes').innerHTML = (users || []).map(p => {
+      if (p.id === currentUser.id) return '';
+      return '<div class="resa-card"><div class="resa-head"><div class="resa-title">' + escapeHtml((p.prenom || '') + ' ' + (p.nom || '')) + '</div><span class="st ' + (p.suspendu ? 'st-refusee' : 'st-acceptee') + '">' + (p.suspendu ? 'Suspendu' : p.role) + '</span></div>' +
+        '<div class="resa-info">📞 ' + escapeHtml(p.telephone || '—') + ' · KYC : ' + escapeHtml(p.kyc_statut || 'aucun') + '</div>' +
+        '<div class="resa-actions">' + (p.suspendu
+          ? '<button class="ra-accept" onclick="setSuspendu(\'' + p.id + '\', false)">🟢 Réactiver</button>'
+          : '<button class="ra-refuse" onclick="setSuspendu(\'' + p.id + '\', true)">⛔ Suspendre</button>') + '</div></div>';
+    }).join('') || "<div class='msg-empty'>Aucun compte.</div>";
+  } catch (e) { console.error(e); showToast(msgErreur(e), 'error'); }
 }
 
 // ══ RÉSIDENCES ══
@@ -1030,16 +1164,17 @@ async function loadResidences() {
   const grid = document.getElementById('listings-grid');
   grid.innerHTML = '<div class="loading-grid"><div class="spinner"></div></div>';
   try {
-    const { data, error } = await sb.from('residences').select('*').order('created_at', { ascending: false });
+    const { data, error } = await sb.from('residences').select('*').eq('statut_annonce', 'active').order('created_at', { ascending: false });
     if (error || !data || data.length === 0) { grid.innerHTML = renderDemoCards(); document.getElementById('stat-residences').innerHTML = '500<span class="accent">+</span>'; allResidences = []; return; }
-    allResidences = data;
     const ownerIds = [...new Set(data.map(r => r.proprietaire_id))];
     if (ownerIds.length) {
-      const { data: profs } = await sb.from('profiles').select('id, prenom, nom, kyc_verifie, abonnement_actif, avatar_url, modes_paiement, whatsapp, telephone').in('id', ownerIds);
+      const { data: profs } = await sb.from('profiles').select('id, prenom, nom, kyc_verifie, abonnement_actif, avatar_url, modes_paiement, whatsapp, telephone, suspendu').in('id', ownerIds);
       (profs || []).forEach(p => { profileCache[p.id] = Object.assign(profileCache[p.id] || {}, p); });
     }
-    document.getElementById('stat-residences').innerHTML = data.length + '<span class="accent">+</span>';
-    grid.innerHTML = data.map((r, i) => renderCard(r, i)).join('');
+    allResidences = data.filter(r => { const o = profileCache[r.proprietaire_id]; return !o || !o.suspendu; });
+    if (!allResidences.length) { grid.innerHTML = renderDemoCards(); document.getElementById('stat-residences').innerHTML = '500<span class="accent">+</span>'; return; }
+    document.getElementById('stat-residences').innerHTML = allResidences.length + '<span class="accent">+</span>';
+    grid.innerHTML = allResidences.map((r, i) => renderCard(r, i)).join('');
   } catch (e) { grid.innerHTML = renderDemoCards(); allResidences = []; }
 }
 function filterListings() {
@@ -1188,7 +1323,7 @@ async function loadReservations() {
 }
 
 async function loadDemandes() {
-  if (!currentUser || !currentProfile || currentProfile.role !== 'proprietaire') return;
+  if (!isProprio()) return;
   const { data: mesR } = await sb.from('residences').select('id').eq('proprietaire_id', currentUser.id);
   const ids = (mesR || []).map(x => x.id);
   if (!ids.length) { document.getElementById('demandes-recues').innerHTML = "<div class='msg-empty'>Aucune demande reçue.</div>"; return; }
@@ -1348,7 +1483,7 @@ function renderThread() {
   const rConv = activeConvo.residenceId ? allResidences.find(x => x.id === activeConvo.residenceId) : null;
   const sub = rConv ? 'À propos : ' + rConv.titre : '';
   let rateBtns = '';
-  if (currentProfile && currentProfile.role === 'proprietaire') rateBtns += '<button class="btn-rate" style="flex:none;" onclick="openRating(\'locataire\', \'' + other + '\', null)">⭐ Noter</button>';
+  if (isProprio()) rateBtns += '<button class="btn-rate" style="flex:none;" onclick="openRating(\'locataire\', \'' + other + '\', null)">⭐ Noter</button>';
   if (rConv && rConv.proprietaire_id !== currentUser.id) rateBtns += '<button class="btn-rate" style="flex:none;" onclick="openRating(\'residence\', \'' + rConv.proprietaire_id + '\', \'' + rConv.id + '\')">⭐ Noter la R</button>';
   const msgs = allMessages.filter(m => (m.expediteur_id === other && m.destinataire_id === currentUser.id) || (m.expediteur_id === currentUser.id && m.destinataire_id === other));
   thread.innerHTML = '<div class="thread-head"><button class="thread-back" onclick="closeThread()">←</button>' + av +
@@ -1469,8 +1604,8 @@ async function loadDashboard() {
   renderBlocSelect();
   renderBlocages();
 
-  if (currentProfile.role === 'proprietaire') {
-    document.getElementById('dash-role-label').textContent = 'Tableau de bord propriétaire';
+  if (isProprio()) {
+    document.getElementById('dash-role-label').textContent = currentProfile.role === 'admin' ? 'Tableau de bord ADMIN + propriétaire' : 'Tableau de bord propriétaire';
     document.getElementById('proprio-section').style.display = 'block';
     document.getElementById('locataire-section').style.display = 'none';
     const { data: annonces } = await sb.from('residences').select('*').eq('proprietaire_id', currentUser.id).order('created_at', { ascending: false });
