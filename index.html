@@ -229,6 +229,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; a
 .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 .modal-switch { text-align: center; margin-top: 20px; font-family: var(--font-body); font-size: 13px; color: var(--ink-soft); }
 .modal-switch a { color: var(--orange); font-weight: 700; cursor: pointer; text-decoration: underline; }
+.forgot-link { display: block; text-align: right; font-size: 11px; color: var(--ink-mute); cursor: pointer; margin-top: 6px; text-decoration: underline; }
 .alert { padding: 12px 16px; border: 2px solid; margin-bottom: 16px; font-family: var(--font-body); font-size: 13px; display: none; }
 .alert.success { border-color: var(--green); background: #f0fdf4; color: #15803d; }
 .alert.error { border-color: var(--red); background: #fef2f2; color: #dc2626; }
@@ -334,7 +335,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
   </div>
 </nav>
 
-<!-- ══ HOME ══ -->
+<!-- ══ HOME ═ -->
 <div class="page active" id="page-home">
   <section class="hero">
     <div class="hero-left">
@@ -490,10 +491,15 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
     <div class="dash-section-title">MON PROFIL</div>
     <div class="id-grid">
       <div class="id-card">
-        <div class="id-label">📷 Photo de profil</div>
+        <div class="id-label">📷 Photo & coordonnées</div>
         <img id="profile-avatar" class="id-avatar" src="" style="display:none;" alt=""/>
         <div id="avatar-placeholder" class="id-avatar-placeholder">👤</div>
         <label class="btn-upload-small">Changer ma photo<input type="file" id="avatar-input" accept="image/*" style="display:none;"/></label>
+        <div class="form-group" style="margin-top:12px;">
+          <label class="form-label">Téléphone / WhatsApp</label>
+          <input type="text" class="form-input" id="phone-input" placeholder="+225 07 00 00 00 00"/>
+        </div>
+        <button class="btn-upload-small" onclick="savePhone()">Enregistrer le numéro</button>
       </div>
       <div class="id-card">
         <div class="id-label">🪪 Vérification d'identité (KYC)</div>
@@ -522,11 +528,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
           <label class="mode-check"><input type="checkbox" id="mode-orange" value="Orange Money"/> Orange Money</label>
           <label class="mode-check"><input type="checkbox" id="mode-mtn" value="MTN MoMo"/> MTN MoMo</label>
           <label class="mode-check"><input type="checkbox" id="mode-wave" value="Wave"/> Wave</label>
-          <div class="form-group" style="margin-top:10px;">
-            <label class="form-label">Numéro WhatsApp (visible après acceptation)</label>
-            <input type="text" class="form-input" id="whatsapp-input" placeholder="Ex: +225 07 00 00 00 00"/>
-          </div>
-          <button class="btn-upload-small" onclick="saveModesPaiement()">Enregistrer</button>
+          <button class="btn-upload-small" style="margin-top:10px;" onclick="saveModesPaiement()">Enregistrer</button>
         </div>
         <div class="id-card">
           <div class="id-label">🚫 Bloquer des dates (indisponible)</div>
@@ -636,6 +638,31 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
   </div>
 </div>
 
+<!-- ══ MODAL MOT DE PASSE OUBLIÉ ══ -->
+<div class="modal-overlay" id="modal-forgot">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('forgot')">✕</button>
+    <div class="modal-title">MOT DE PASSE OUBLIÉ</div>
+    <div class="modal-sub">Entre ton email : tu recevras un lien pour créer un nouveau mot de passe.</div>
+    <div id="forgot-alert" class="alert"></div>
+    <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-input" id="forgot-email" placeholder="ton@email.com"/></div>
+    <button class="btn-submit" onclick="sendReset()">ENVOYER LE LIEN 🔑</button>
+  </div>
+</div>
+
+<!-- ══ MODAL NOUVEAU MOT DE PASSE ══ -->
+<div class="modal-overlay" id="modal-reset">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('reset')">✕</button>
+    <div class="modal-title">NOUVEAU MOT DE PASSE</div>
+    <div class="modal-sub">Choisis un nouveau mot de passe (8 caractères minimum).</div>
+    <div id="reset-alert" class="alert"></div>
+    <div class="form-group"><label class="form-label">Nouveau mot de passe *</label><input type="password" class="form-input" id="reset-password" placeholder="8 caractères minimum"/></div>
+    <div class="form-group"><label class="form-label">Confirme le mot de passe *</label><input type="password" class="form-input" id="reset-password2" placeholder="Répète-le"/></div>
+    <button class="btn-submit" onclick="doReset()">CHANGER MON MOT DE PASSE ✔</button>
+  </div>
+</div>
+
 <!-- ══ MODALS AUTH ══ -->
 <div class="modal-overlay" id="modal-signup">
   <div class="modal">
@@ -649,6 +676,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
     <div id="signup-alert" class="alert"></div>
     <div class="form-group"><label class="form-label">Prénom *</label><input type="text" class="form-input" id="signup-prenom" placeholder="Ton prénom"/></div>
     <div class="form-group"><label class="form-label">Nom *</label><input type="text" class="form-input" id="signup-nom" placeholder="Ton nom"/></div>
+    <div class="form-group"><label class="form-label">Téléphone / WhatsApp *</label><input type="tel" class="form-input" id="signup-tel" placeholder="+225 07 00 00 00 00"/></div>
     <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-input" id="signup-email" placeholder="ton@email.com"/></div>
     <div class="form-group"><label class="form-label">Mot de passe *</label><input type="password" class="form-input" id="signup-password" placeholder="Minimum 6 caractères"/></div>
     <div class="form-group"><label class="form-label">Tu es... *</label>
@@ -674,7 +702,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
     <div class="modal-sub">Content de te revoir sur MA R.</div>
     <div id="login-alert" class="alert"></div>
     <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-input" id="login-email" placeholder="ton@email.com"/></div>
-    <div class="form-group"><label class="form-label">Mot de passe *</label><input type="password" class="form-input" id="login-password" placeholder="Ton mot de passe"/></div>
+    <div class="form-group"><label class="form-label">Mot de passe *</label><input type="password" class="form-input" id="login-password" placeholder="Ton mot de passe"/><span class="forgot-link" onclick="closeModal('login'); openModal('forgot');">Mot de passe oublié ?</span></div>
     <button class="btn-submit" id="login-btn" onclick="login()">SE CONNECTER</button>
     <div class="modal-switch">Pas encore de compte ? <a onclick="switchModal('login','signup')">S'inscrire gratuitement</a></div>
   </div>
@@ -701,7 +729,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
     </div>
     <div class="legal-block" id="legal-confidentialite">
       <h3>Politique de confidentialité</h3>
-      <p><strong>Données collectées :</strong> identité, contact, document KYC si transmis, annonces, photos, messages, avis, réservations.</p>
+      <p><strong>Données collectées :</strong> identité, contact (email, téléphone), document KYC si transmis, annonces, photos, messages, avis, réservations.</p>
       <p><strong>Finalités :</strong> comptes, lutte anti-fraude, mise en relation, preuves d'accord, obligations légales.</p>
       <p><strong>Destinataires :</strong> équipe MA R uniquement. Aucune vente de données.</p>
       <p><strong>Hébergement :</strong> Supabase (Paris), Cloudinary, Vercel.</p>
@@ -716,7 +744,7 @@ footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 5
 </div>
 
 <script>
-console.log('%cMA R v9.1 — apostrophes corrigées', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
+console.log('%cMA R v9.2 — mot de passe oublié + téléphone', 'background:#FF5C00;color:#fff;padding:4px 8px;font-weight:bold;');
 
 const SUPABASE_URL = 'https://zfcgxjbylbpdtlsukgjk.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmY2d4amJ5bGJwZHRsc3VrZ2prIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MTIyNDMsImV4cCI6MjEwMjE4ODI0M30.W14VLIWoWxTHWI3NfS_qHuaofLnBG_d5BbNjPwLn_3Q';
@@ -733,7 +761,7 @@ function fetchWithTimeout(url, options = {}) {
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
   global: { fetch: fetchWithTimeout },
-  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
 });
 
 let currentUser = null, currentProfile = null, allResidences = [];
@@ -803,24 +831,26 @@ async function uploadPhoto(file, i) {
   return null;
 }
 
-// ══ AUTH ═
+// ══ AUTH + MOT DE PASSE OUBLIÉ ══
 async function signup() {
   const prenom = document.getElementById('signup-prenom').value.trim();
   const nom = document.getElementById('signup-nom').value.trim();
+  const tel = document.getElementById('signup-tel').value.trim();
   const email = document.getElementById('signup-email').value.trim();
   const password = document.getElementById('signup-password').value;
   const role = document.getElementById('signup-role').value;
-  if (!prenom || !nom || !email || !password) return showAlert('signup-alert', 'Remplis tous les champs obligatoires.', 'error');
+  if (!prenom || !nom || !tel || !email || !password) return showAlert('signup-alert', 'Remplis tous les champs obligatoires.', 'error');
+  if (!/^[+0-9][0-9 .-]{7,}$/.test(tel)) return showAlert('signup-alert', 'Numéro de téléphone invalide (ex : +225 07 00 00 00 00).', 'error');
   if (password.length < 6) return showAlert('signup-alert', 'Le mot de passe doit faire au moins 6 caractères.', 'error');
   if (!document.getElementById('signup-cgu').checked) return showAlert('signup-alert', 'Tu dois accepter les CGU pour créer un compte.', 'error');
   const btn = document.getElementById('signup-btn');
   btn.disabled = true; btn.textContent = 'CRÉATION EN COURS...'; hideAlert('signup-alert');
   try {
-    const { data, error } = await sb.auth.signUp({ email, password, options: { data: { prenom, nom, role } } });
+    const { data, error } = await sb.auth.signUp({ email, password, options: { data: { prenom, nom, role, telephone: tel } } });
     if (error) showAlert('signup-alert', error.message, 'error');
     else {
-      showAlert('signup-alert', '🎉 Compte créé ! Vérifie ton email puis connecte-toi.', 'success');
-      setTimeout(() => { closeModal('signup'); openModal('login'); }, 3000);
+      showAlert('signup-alert', '🎉 Compte créé ! Connecte-toi maintenant.', 'success');
+      setTimeout(() => { closeModal('signup'); openModal('login'); }, 2500);
     }
   } catch (e) { showAlert('signup-alert', msgErreur(e), 'error'); }
   finally { btn.disabled = false; btn.textContent = 'CRÉER MON COMPTE'; }
@@ -837,6 +867,29 @@ async function login() {
     else { await loadUser(data.user); closeModal('login'); showToast('Bienvenue sur MA R !'); }
   } catch (e) { showAlert('login-alert', msgErreur(e), 'error'); }
   finally { btn.disabled = false; btn.textContent = 'SE CONNECTER'; }
+}
+async function sendReset() {
+  const email = document.getElementById('forgot-email').value.trim();
+  if (!email) return showAlert('forgot-alert', 'Entre ton adresse email.', 'error');
+  try {
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin });
+    if (error) return showAlert('forgot-alert', error.message, 'error');
+    showAlert('forgot-alert', 'Email envoyé ! Vérifie ta boîte (et les spams), puis clique sur le lien.', 'success');
+  } catch (e) { showAlert('forgot-alert', msgErreur(e), 'error'); }
+}
+async function doReset() {
+  const p1 = document.getElementById('reset-password').value;
+  const p2 = document.getElementById('reset-password2').value;
+  if (p1.length < 8) return showAlert('reset-alert', '8 caractères minimum.', 'error');
+  if (p1 !== p2) return showAlert('reset-alert', 'Les deux mots de passe ne correspondent pas.', 'error');
+  try {
+    const { error } = await sb.auth.updateUser({ password: p1 });
+    if (error) return showAlert('reset-alert', error.message, 'error');
+    closeModal('reset');
+    await sb.auth.signOut();
+    showToast('Mot de passe changé ! Connecte-toi.');
+    openModal('login');
+  } catch (e) { showAlert('reset-alert', msgErreur(e), 'error'); }
 }
 async function logout() {
   try { await sb.auth.signOut(); } catch (e) {}
@@ -874,11 +927,21 @@ function renderProfileSection() {
   const av = document.getElementById('profile-avatar'), ph = document.getElementById('avatar-placeholder');
   if (currentProfile.avatar_url) { av.src = optUrl(currentProfile.avatar_url, 200); av.style.display = 'block'; ph.style.display = 'none'; }
   else { av.style.display = 'none'; ph.style.display = 'flex'; }
+  document.getElementById('phone-input').value = currentProfile.telephone || '';
   const st = document.getElementById('kyc-status'), label = document.getElementById('kyc-label');
   const s = currentProfile.kyc_statut || 'aucun';
   if (currentProfile.kyc_verifie || s === 'valide') { st.innerHTML = '<div class="kyc-ok">✔ IDENTITÉ VÉRIFIÉE — badge public actif</div>'; label.style.display = 'none'; }
   else if (s === 'en_attente') { st.innerHTML = '<div class="kyc-wait">⏳ Document reçu — vérification en cours (24-48h)</div>'; label.style.display = 'none'; }
   else { st.innerHTML = "<div class='kyc-none'>Envoie une photo de ta CNI, ton permis ou ton passeport. Tu recevras le badge ✔ Vérifié après contrôle.</div>"; label.style.display = 'inline-flex'; }
+}
+function savePhone() {
+  const v = document.getElementById('phone-input').value.trim();
+  if (!/^[+0-9][0-9 .-]{7,}$/.test(v)) return showToast('Numéro invalide (ex : +225 07 00 00 00 00)', 'error');
+  sb.from('profiles').update({ telephone: v, whatsapp: v }).eq('id', currentUser.id).then(({ error }) => {
+    if (error) return showToast('Erreur : ' + error.message, 'error');
+    currentProfile.telephone = v; currentProfile.whatsapp = v;
+    showToast('Numéro enregistré 📞');
+  });
 }
 function initProfileUploads() {
   document.getElementById('avatar-input').addEventListener('change', async (e) => {
@@ -912,10 +975,9 @@ function saveModesPaiement() {
     const el = document.getElementById(id);
     if (el.checked) modes.push(el.value);
   });
-  const whatsapp = document.getElementById('whatsapp-input').value.trim();
-  sb.from('profiles').update({ modes_paiement: modes, whatsapp }).eq('id', currentUser.id).then(({ error }) => {
+  sb.from('profiles').update({ modes_paiement: modes }).eq('id', currentUser.id).then(({ error }) => {
     if (error) return showToast('Erreur : ' + error.message, 'error');
-    currentProfile.modes_paiement = modes; currentProfile.whatsapp = whatsapp;
+    currentProfile.modes_paiement = modes;
     showToast('Moyens de paiement enregistrés 💵');
   });
 }
@@ -926,7 +988,6 @@ function renderModesForm() {
   document.getElementById('mode-orange').checked = m.includes('Orange Money');
   document.getElementById('mode-mtn').checked = m.includes('MTN MoMo');
   document.getElementById('mode-wave').checked = m.includes('Wave');
-  document.getElementById('whatsapp-input').value = currentProfile.whatsapp || '';
 }
 
 // ══ RÉSIDENCES ══
@@ -1004,8 +1065,7 @@ async function renderResidencePage() {
   const r = currentResidence; if (!r) return;
   const owner = profileCache[r.proprietaire_id] || {};
   const photos = r.photos || [];
-  const main = document.getElementById('res-main-img');
-  main.src = photos.length ? optUrl(photos[0], 1200) : '';
+  document.getElementById('res-main-img').src = photos.length ? optUrl(photos[0], 1200) : '';
   document.getElementById('res-thumbs').innerHTML = photos.map((p, i) =>
     '<img src="' + optUrl(p, 200) + '" onclick="document.getElementById(\'res-main-img\').src=\'' + optUrl(p, 1200) + '\'"/>').join('');
   document.getElementById('res-title').textContent = r.titre;
@@ -1148,7 +1208,7 @@ async function loadDemandes() {
       actions = '<button class="ra-rate" onclick="setResaStatus(\'' + resa.id + '\', \'terminee\')">🏁 Marquer séjour terminé</button>';
     }
     return '<div class="resa-card"><div class="resa-head"><div class="resa-title">' + escapeHtml(loc.prenom || 'Locataire') + ' → ' + escapeHtml(r.titre || '') + '</div><span class="st st-' + resa.statut + '">' + STATUS_LABEL[resa.statut] + '</span></div>' +
-      '<div class="resa-info">📅 Du ' + fmtDate(resa.date_debut) + ' au ' + fmtDate(resa.date_fin) + ' · ' + (resa.nb_voyageurs || 2) + ' voy.<br/>💰 ' + (resa.prix_convenu || 0).toLocaleString('fr-FR') + ' FCFA' + (resa.message ? '<br/>💬 ' + escapeHtml(resa.message) : '') + '</div>' +
+      '<div class="resa-info">📅 Du ' + fmtDate(resa.date_debut) + ' au ' + fmtDate(resa.date_fin) + ' · ' + (resa.nb_voyageurs || 2) + ' voy. · 📞 ' + escapeHtml(loc.telephone || '—') + '<br/>💰 ' + (resa.prix_convenu || 0).toLocaleString('fr-FR') + ' FCFA' + (resa.message ? '<br/>💬 ' + escapeHtml(resa.message) : '') + '</div>' +
       '<div class="resa-actions">' + actions + '</div></div>';
   }).join('');
 }
@@ -1222,7 +1282,7 @@ async function loadMessages() {
     allMessages = data || [];
     const ids = [...new Set(allMessages.map(m => m.expediteur_id === currentUser.id ? m.destinataire_id : m.expediteur_id))];
     if (ids.length) {
-      const { data: profs } = await sb.from('profiles').select('id, prenom, nom, avatar_url, kyc_verifie, abonnement_actif').in('id', ids);
+      const { data: profs } = await sb.from('profiles').select('id, prenom, nom, avatar_url, kyc_verifie, abonnement_actif, telephone').in('id', ids);
       (profs || []).forEach(p => { profileCache[p.id] = Object.assign(profileCache[p.id] || {}, p); });
     }
     renderMsgList(); updateBadge();
@@ -1342,7 +1402,7 @@ function startRealtime() {
 }
 function stopRealtime() { if (msgChannel) { sb.removeChannel(msgChannel); msgChannel = null; } }
 
-// ══ NOTATION (vérifiée après séjour) ══
+// ══ NOTATION ══
 async function openRating(type, targetId, residenceId) {
   if (!currentUser) { showToast('Connecte-toi pour noter', 'error'); return openModal('login'); }
   if (type === 'residence') {
@@ -1558,6 +1618,7 @@ async function init() {
   initDragDrop();
   document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
   sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY') { setTimeout(() => openModal('reset'), 300); return; }
     if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') { if (session?.user) setTimeout(() => loadUser(session.user), 0); }
     else if (event === 'SIGNED_OUT') { currentUser = null; currentProfile = null; allMessages = []; activeConvo = null; stopRealtime(); updateBadge(); updateNavUI(false); }
   });
